@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "453532307826",
+    "firebase_url": "https://studdytogether.firebaseio.com",
+    "project_id": "studdytogether",
+    "storage_bucket": "studdytogether.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453532307826:android:da58d1f44b410cfa",
+        "android_client_info": {
+          "package_name": "com.mtjin.studdytogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "453532307826-crkmdhf4niu3i576o7rc90i8m17odb31.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mtjin.studdytogether",
+            "certificate_hash": "2594505716124fb73c0d9ca0633d9dd80b38d943"
+          }
+        },
+        {
+          "client_id": "453532307826-5cs2jvej8dvd9r3aedlnq6t7cr3nj4l0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL_iGCIFD9XJtzwVWbDrkeR_2SfFZyulM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "453532307826-5cs2jvej8dvd9r3aedlnq6t7cr3nj4l0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
