@@ -17,8 +17,7 @@ ImageView imageView;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        imageView = findViewById(R.id.im);
+/*
         // 선택한 이미지에서 비트맵 생성
         InputStream in = null;
         try {
@@ -31,7 +30,7 @@ ImageView imageView;
             imageView.setImageBitmap(img);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 }

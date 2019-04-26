@@ -168,13 +168,16 @@ public class ProfileActivity extends AppCompatActivity {
                 else if (mNickName != null && mSex != null) { //제대로 작성한 경우
                     //값 데이터베이스에서 넣어줌
                     profile = new Profile(mEmail, mNickName, mSex);
-                    mProfieDatabaseReference.child(DataValidation.parsingEmail(profile.getEmail())).setValue(profile); //닉네임을 루트로 사용자 정보 저장
+                    //닉네임을 루트로 사용자 정보 저장
+                    mProfieDatabaseReference.child(DataValidation.parsingEmail(profile.getEmail())).setValue(profile);
+                    //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                    saveProfileSharedPreferences(profile, image);
+                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                    startActivity(intent);
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
                 }
-                saveProfileSharedPreferences(profile, image);
-                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                startActivity(intent);
+
             }
         });
     }
