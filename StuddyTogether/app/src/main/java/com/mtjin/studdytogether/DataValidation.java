@@ -22,7 +22,7 @@ public class DataValidation {
      *  @Return 문자열 검증
      */
     public static boolean checkOnlyCharacters(String text) {
-        String regExp = "^[ㄱ-ㅎ가-힣a-z0-9]*$";
+        String regExp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9]*$";
         return Pattern.matches(regExp, text);
     }
 

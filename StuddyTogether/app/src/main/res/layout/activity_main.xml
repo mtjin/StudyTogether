@@ -226,7 +226,7 @@
                 android:textSize="20dp" />
 
             <Button
-                android:id="@+id/main_btn_all"
+                android:id="@+id/main_btn_allcity"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
