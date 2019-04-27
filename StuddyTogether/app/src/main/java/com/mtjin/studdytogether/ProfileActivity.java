@@ -28,12 +28,14 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
+    static final String TAG = "ProfileActivityTAG";
     private EditText mNickNameEditText;
     private Spinner mSexSpinner;
     private Spinner mAgeSpinner;
     private Button mOkButton;
     private CircleImageView mPhotoCircleImageView;
-    private String mNickName;
+    private String mUid; //사용자 토큰 고유 아이디
+    private String mNickName; //닉네임
     private String mSex; //성별 남자 or 여자
     private String mEmail; //이메일
     private String mAge; //나이대
@@ -98,9 +100,9 @@ public class ProfileActivity extends AppCompatActivity {
                     in.close();
                     // 이미지 표시
                     mPhotoCircleImageView.setImageBitmap(img);
-                    /*mImage = data.getData() + ""; //사용할려면 uri.parse함수 사용해야함
+                    mImage = data.getData() + "";//사용할려면 uri.parse함수 사용해야함
                     Log.d("ProfileActivityTAG", data.getData() + "");
-                    Log.d("ProfileActivityTAG", in + "");*/
+                    Log.d("ProfileActivityTAG", in + "");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -114,6 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
         //파이어베이스 인증
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
         Log.d("PROFILE22", mEmail);
 
@@ -147,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
                     //값 데이터베이스에서 넣어줌
                     profile = new Profile(mEmail, mNickName, mSex, mAge, mImage);
                     //닉네임을 루트로 사용자 정보 저장
-                    mProfieDatabaseReference.child(DataValidation.parsingEmail(profile.getEmail())).setValue(profile);
+                    mProfieDatabaseReference.child(mUid).setValue(profile);
                     //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                     saveProfileSharedPreferences(profile);
                     Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
@@ -160,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    //로컬에 프로필정보 저장
+    //로컬에 프로필정보 저장 (확인 버튼 클릭시 호출)
     public void saveProfileSharedPreferences(Profile profile) {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -170,13 +173,14 @@ public class ProfileActivity extends AppCompatActivity {
         editor.putString("age", profile.getAge());
         editor.putString("image", profile.getImage());
 
-        Log.d("ProfileActivityShared", profile.getEmail());
-        Log.d("ProfileActivityShared", profile.getNickName());
-        Log.d("ProfileActivityShared", profile.getSex());
-        Log.d("ProfileActivityShared", profile.getAge());
-        Log.d("ProfileActivityShared", profile.getImage());
+        Log.d(TAG, profile.getEmail());
+        Log.d(TAG, profile.getNickName());
+        Log.d(TAG, profile.getSex());
+        Log.d(TAG, profile.getAge());
+        Log.d(TAG, profile.getImage());
         editor.commit();
     }
+
 
     /*
      *   스피너 관련 메소드
@@ -195,7 +199,7 @@ public class ProfileActivity extends AppCompatActivity {
         ageArrayList.add("60대");
         ageArrayList.add("70대");
         ageArrayList.add("80대");
-        ageArrayList.add("00대");
+        ageArrayList.add("90대");
 
         //스피너 선택시 리스너
         mSexSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

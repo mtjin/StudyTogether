@@ -38,22 +38,27 @@ public class DataValidation {
     }
 
     /*
-    * 이메일 아이디 @ㅇㅇㅇ.com 에서 .com 전까지 파싱
-    * @Param 이메일 (wlatmd210@gmail.com)
-    * @Return 뒤에 .com 없앤 값 (wlatmd210@gmail)
-    *
-    * */
-    public static String parsingEmail(String email){
+     * 이메일 아이디 . # $ [ ] 5가지 리얼타임디비에 child값으로 못넣으므로 _로 반환해줌
+     * @Param 이메일 (ex.210@gmail.com)
+     * @Return .(점) 다없앤값 (ex210@gmailcom)
+     *
+     * */
+    public static String parsingEmail(String email) {
         String result = "";
-        String[] str = email.split("@"); //@이전값 사용할거다
-        Log.d("Datavaild_TAG" , str[0]);  //wlatmd210
+        result = email.replaceAll("\\.", "_");
+        result = result.replaceAll("#", "_");
+        result = result.replaceAll("\\$", "_");
+        result = result.replaceAll("\\[", "_");
+        result = result.replaceAll("\\]", "_");
+
+        /*Log.d("Datavaild_TAG" , str[0]);  //wlatmd210
         Log.d("Datavaild_TAG" , str[1]); //gmail.com
         result += (str[0] + "@");
         Log.d("Datavaild_TAG" , result); //wlatmd210@
         String[] str2 = str[1].trim().split("\\."); // .이전값 사용할거다
         Log.d("Datavaild_TAG" , str2[0]);  // ==> ArrayIndexOutOfBoundsException 에러
-        result += str2[0];
-        return  result;
+        result += str2[0];*/
+        return result;
     }
 
 

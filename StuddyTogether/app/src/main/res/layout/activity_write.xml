@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".WriteActivity"
+    android:background="@color/yellowSplash">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:background="@drawable/thin_down_border">
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:text="글작성"
+            />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_contentsWrite"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rectangle_line"
+        android:gravity="top"
+        android:hint="스터디 내용을 작성해주세요.(1000자 이내)"
+        android:maxLength="1000"
+        android:padding="10dp"
+        android:textCursorDrawable="@color/colorPrimaryDark"
+        android:textSize="18dp"
+        android:privateImeOptions="defaultInputmode=korean"
+        />
+
+</LinearLayout>
