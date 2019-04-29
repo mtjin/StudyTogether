@@ -204,9 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
                     }
-
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
                 }
