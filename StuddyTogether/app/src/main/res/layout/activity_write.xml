@@ -9,32 +9,95 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:background="@drawable/thin_down_border">
-        <TextView
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="글작성"
-            />
+        android:background="@drawable/thin_down_border"
+        android:orientation="horizontal"
+        android:gravity="right">
+
+        <Button
+            android:id="@+id/write_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="저장" />
+
+        <Button
+            android:id="@+id/write_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="취소" />
+
     </LinearLayout>
 
     <EditText
-        android:id="@+id/et_contentsWrite"
+        android:id="@+id/write_et_title"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rectangle_line"
+        android:gravity="top"
+        android:hint="스터디 제목을 작성해주세요.(30자 이내)"
+        android:maxLength="30"
+        android:padding="10dp"
+        android:privateImeOptions="defaultInputmode=korean"
+        android:textCursorDrawable="@color/colorPrimaryDark"
+        android:textSize="10dp" />
+
+    <EditText
+        android:id="@+id/write_et_contents"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_margin="10dp"
         android:background="@drawable/rectangle_line"
         android:gravity="top"
         android:hint="스터디 내용을 작성해주세요.(1000자 이내)"
         android:maxLength="1000"
         android:padding="10dp"
-        android:textCursorDrawable="@color/colorPrimaryDark"
-        android:textSize="18dp"
         android:privateImeOptions="defaultInputmode=korean"
-        />
+        android:textCursorDrawable="@color/colorPrimaryDark"
+        android:textSize="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/write_tv_addphoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectange_photoadd_line"
+                android:drawableBottom="@android:drawable/ic_input_add"
+                android:padding="2dp"
+                android:text="사진추가"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/write_tv_deletephoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectange_photoadd_line"
+                android:drawableBottom="@android:drawable/ic_input_add"
+                android:padding="2dp"
+                android:text="사진삭제"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/write_iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gallery"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
+
 
 </LinearLayout>

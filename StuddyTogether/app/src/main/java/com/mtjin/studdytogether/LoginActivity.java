@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FirebaseApp.initializeApp(this);
+       // FirebaseApp.initializeApp(this);
 
         mIdEditText = findViewById(R.id.login_pt_id);
         mPasswordEditText = findViewById(R.id.login_pt_password);

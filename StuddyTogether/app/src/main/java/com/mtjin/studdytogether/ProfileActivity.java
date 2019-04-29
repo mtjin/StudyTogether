@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +18,21 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mtjin.studdytogether.realtime_database.Profile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -40,8 +51,12 @@ public class ProfileActivity extends AppCompatActivity {
     private String mEmail; //이메일
     private String mAge; //나이대
     private String mImage; //프로필사진
+    private Uri mDownloadImageUri; //프로필사진 스토리지 URI
+    private  Bitmap img; //비트맵 프로필사진
     private FirebaseAuth mFirebaseAuth; //인증객체
     private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
+    private StorageReference mStorageRef; //파이어베이스 스토리지
+    private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리지
 
     //RequestCode
     final static int PICK_IMAGE = 1;
@@ -59,6 +74,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         mNickNameEditText = findViewById(R.id.profile_pt_nickname);
         mSexSpinner = findViewById(R.id.profile_sp_sex);
@@ -94,15 +111,17 @@ public class ProfileActivity extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 try {
+                  /*  mPhotoCircleImageView.setImageURI(data.getData());
+                    mImage = data.getData()+"";*/
                     // 선택한 이미지에서 비트맵 생성
                     InputStream in = getContentResolver().openInputStream(data.getData());
-                    Bitmap img = BitmapFactory.decodeStream(in);
+                     img = BitmapFactory.decodeStream(in);
                     in.close();
                     // 이미지 표시
                     mPhotoCircleImageView.setImageBitmap(img);
                     mImage = data.getData() + "";//사용할려면 uri.parse함수 사용해야함
                     Log.d("ProfileActivityTAG", data.getData() + "");
-                    Log.d("ProfileActivityTAG", in + "");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -118,6 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
+        mProfileRef = mStorageRef.child(mUid+"profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
         Log.d("PROFILE22", mEmail);
 
 
@@ -147,14 +167,46 @@ public class ProfileActivity extends AppCompatActivity {
                 if (mNickName.length() > 5 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~5글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
-                    //값 데이터베이스에서 넣어줌
-                    profile = new Profile(mEmail, mNickName, mSex, mAge, mImage);
-                    //닉네임을 루트로 사용자 정보 저장
-                    mProfieDatabaseReference.child(mUid).setValue(profile);
-                    //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
-                    saveProfileSharedPreferences(profile);
-                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    if(img != null){
+                        //파이어베이스 스토리지에 업로드
+                        Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] datas = baos.toByteArray();
+                        UploadTask uploadTask = mProfileRef.putBytes(datas);
+                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return mProfileRef.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    mDownloadImageUri = task.getResult();
+                                    Log.d(TAG+"DOWN", mDownloadImageUri+"");
+                                    //값 데이터베이스에서 넣어줌
+                                    profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri+"");
+                                    //닉네임을 루트로 사용자 정보 저장
+                                    mProfieDatabaseReference.child(mUid).setValue(profile);
+                                    //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                                    saveProfileSharedPreferences(profile);
+                                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    // Handle failures
+                                    Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                    }
+
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
                 }
