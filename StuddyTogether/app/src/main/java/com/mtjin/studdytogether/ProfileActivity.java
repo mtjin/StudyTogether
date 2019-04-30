@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,12 +26,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mtjin.studdytogether.realtime_database.Profile;
+
+import org.w3c.dom.Comment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -101,7 +107,6 @@ public class ProfileActivity extends AppCompatActivity {
         DatabaseReference databaseReference = mProfieDatabaseReference;
         Log.d("DDDDDD", databaseReference.toString() + "");
 
-
     }
 
     @Override //갤러리에서 이미지 불러온 후 행동
@@ -127,6 +132,31 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void basicQueryValueListener() {
+       /* String myUserId = getUid();
+        Query myTopPostsQuery = databaseReference.child("user-posts").child(myUserId)
+                .orderByChild("starCount");
+
+        // [START basic_query_value_listener]
+        // My top posts by number of stars
+        myTopPostsQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    // TODO: handle the post
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        });
+        // [END basic_query_value_listener]*/
     }
 
     @Override
@@ -204,6 +234,16 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                    }else{ //프로필이미지 기본으로할경우
+                        Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
+                        //값 데이터베이스에서 넣어줌
+                        profile = new Profile(mEmail, mNickName, mSex, mAge, "basic");
+                        //닉네임을 루트로 사용자 정보 저장
+                        mProfieDatabaseReference.child(mUid).setValue(profile);
+                        //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                        saveProfileSharedPreferences(profile);
+                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        startActivity(intent);
                     }
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
@@ -215,7 +255,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //로컬에 프로필정보 저장 (확인 버튼 클릭시 호출)
     public void saveProfileSharedPreferences(Profile profile) {
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("email", profile.getEmail());
         editor.putString("nickName", profile.getNickName());
@@ -232,9 +272,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    /*
-     *   스피너 관련 메소드
-     * */
+    //스피너 세팅작업
     public void spinnerDo() {
         //스피너에 넣을 arrayList 데이터 (성별, 나이)
         sexArrayList = new ArrayList<String>();

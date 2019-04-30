@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,13 +97,16 @@ public class SeoulActivity extends AppCompatActivity {
                 holder.nickNameTextView.setText(model.getNickName());
                 holder.ageTextView.setText(model.getAge());
                 holder.messageTextView.setText(model.getContent());
-                if(model.getImage() != "basic") { //프로필사진이있는 경우
-                    Glide.with(SeoulActivity.this).load(model.getImage()).into(holder.photoImageView);
+                if(model.getImage().equals("basic")) { //프로필사진이 없는경우
+                    Glide.with(SeoulActivity.this).load("https://firebasestorage.googleapis.com/v0/b/studdytogether.appspot.com/o/Basisc%2FbasicProfile.png?alt=media&token=dd0e0e17-a057-40a4-ae7f-364fa529e2a3").into(holder.photoImageView);
                 }else{
-                    holder.photoImageView.setImageResource(R.drawable.profile);
+                    Glide.with(SeoulActivity.this).load(model.getImage()).into(holder.photoImageView);
                 }
-                //이것이 if else로해야하는데 일단테스트로해봄 (사진올린경우만될거임)
-                Glide.with(SeoulActivity.this).load(model.getPhoto()).into(holder.messageImageView);
+               if(model.getPhoto() != "basic") {
+                   Glide.with(SeoulActivity.this).load(model.getPhoto()).into(holder.messageImageView);
+               }else{
+                   //사진첨부안했으니 안올림
+               }
             }
 
             @NonNull
@@ -177,12 +181,13 @@ public class SeoulActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //프로필 정보받아옴
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         mEmail = pref.getString("email", "");
         mNickName = pref.getString("nickName", "");
         mSex = pref.getString("sex", "");
         mAge = pref.getString("age", "");
         mImage = pref.getString("image", "");
+        Log.d(TAG, mImage);
     }
 
     @Override

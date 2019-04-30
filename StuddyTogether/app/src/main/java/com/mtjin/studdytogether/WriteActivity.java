@@ -159,6 +159,16 @@ public class WriteActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }else{ //저장한 이미지 없는 경우
+                //값 데이터베이스에서 넣어줌
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("title", title);
+                bundle.putString("contents", contents);
+                bundle.putString("donwnloadImageUri", "basic");
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         }else{
             Toast.makeText(this, "공백을 채워주세요", Toast.LENGTH_SHORT).show();
