@@ -1,10 +1,13 @@
 package com.mtjin.studdytogether;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,7 +62,7 @@ public class WriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
-
+        setTitle("서울지역");
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         saveButton = findViewById(R.id.write_btn_save);
@@ -80,10 +83,11 @@ public class WriteActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                showMessge();
             }
         });
 
+        //사진추가
         addPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +95,15 @@ public class WriteActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, PICK_IMAGE);
+            }
+        });
+
+        //사진삭제
+        deletePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoImageView.setImageBitmap(null);
+                img = null;
             }
         });
 
@@ -175,6 +188,42 @@ public class WriteActivity extends AppCompatActivity {
         }
         
     }
+
+    public void showMessge(){
+
+        //다이얼로그 객체 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //속성 지정
+        builder.setTitle("안내");
+        builder.setMessage("작성하시던 글이 지워집니다 " +
+                "종료 하시겠습니까?");
+        //아이콘
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+        //예 버튼 눌렀을 때
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(WriteActivity.this, "예버튼이 눌렸습니다", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+
+        //예 버튼 눌렀을 때
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(WriteActivity.this, "아니오 버튼이 눌렸습니다", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //만들어주기
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     @Override
     protected void onStart() {

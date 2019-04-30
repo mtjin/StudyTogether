@@ -194,8 +194,8 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
-                if (mNickName.length() > 5 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
-                    Toast.makeText(ProfileActivity.this, "닉네임은 1~5글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
+                if (mNickName.length() > 7 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
+                    Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
                     if(img != null){
                         //파이어베이스 스토리지에 업로드
