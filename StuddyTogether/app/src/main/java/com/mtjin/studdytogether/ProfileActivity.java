@@ -1,5 +1,6 @@
 package com.mtjin.studdytogether;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -197,6 +198,16 @@ public class ProfileActivity extends AppCompatActivity {
                 if (mNickName.length() > 7 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
+                    //로딩
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    final ProgressDialog progressDialog = new ProgressDialog(ProfileActivity.this);
+                                    progressDialog.setIndeterminate(true);
+                                    progressDialog.setMessage("잠시만 기다려 주세요");
+                                    progressDialog.show();
+                                }
+                            }, 100);
                     if(img != null){
                         //파이어베이스 스토리지에 업로드
                         Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();

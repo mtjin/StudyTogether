@@ -12,7 +12,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/thin_down_border"
         android:orientation="horizontal"
         android:padding="3dp">
 
@@ -42,7 +41,7 @@
             android:id="@+id/message_iv_profile"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="3dp"
             app:civ_border_color="#FF000000"
             app:civ_border_width="2dp"
             android:src="@drawable/profile" />
@@ -51,16 +50,17 @@
             android:id="@+id/message_tv_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="5dp"
             android:gravity="center"
             android:text="공부의신"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="|   "
+            android:text="| "
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -70,14 +70,31 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="10대"
+            android:layout_marginRight="5dp"
             android:textSize="20dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="|  "
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/message_tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="2019-04-30"
+            android:textSize="20dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/thin_down_border">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/message_tv_message"
@@ -94,13 +111,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/thin_down_border">
 
         <ImageView
             android:id="@+id/message_iv_photo"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="120dp"
             android:scaleType="fitXY"
             android:src="@drawable/gallery" />
         <!--

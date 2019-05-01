@@ -34,6 +34,8 @@ import com.mtjin.studdytogether.realtime_database.StudyMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class WriteActivity extends AppCompatActivity {
     Button saveButton;
@@ -55,9 +57,10 @@ public class WriteActivity extends AppCompatActivity {
 
     //RequestCode
     final static int PICK_IMAGE = 1;
-
     //값들
     private String mImage;
+    //날짜포맷
+    SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,20 +140,10 @@ public class WriteActivity extends AppCompatActivity {
         final String title = titleEditText.getText().toString();
         final String contents = contentsEditText.getText().toString();
         if(title !=null && contents !=null){
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            final ProgressDialog progressDialog = new ProgressDialog(WriteActivity.this);
-                            progressDialog.setIndeterminate(true);
-                            progressDialog.setMessage("잠시만 기다려 주세요");
-                            progressDialog.show();
-                        }
-                    }, 100);
+            loading(); //로딩 다이얼로그
             if(img != null){
                 //파이어베이스 스토리지에 업로드
                 Toast.makeText(WriteActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
-                /*ProgressDialog pd = ProgressDialog.show(WriteActivity.this, "로딩중", "페이지 로딩 중입니다...");
-                pd.dismiss();*/
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] datas = baos.toByteArray();
@@ -176,6 +169,10 @@ public class WriteActivity extends AppCompatActivity {
                             bundle.putString("title", title);
                             bundle.putString("contents", contents);
                             bundle.putString("donwnloadImageUri", mDownloadImageUri+"");
+                            //작성시간 put
+                            Calendar time = Calendar.getInstance();
+                            String dates = format1.format(time.getTime());
+                            bundle.putString("dates", dates);
                             intent.putExtras(bundle);
                             setResult(RESULT_OK, intent);
                             finish();
@@ -193,6 +190,10 @@ public class WriteActivity extends AppCompatActivity {
                 bundle.putString("title", title);
                 bundle.putString("contents", contents);
                 bundle.putString("donwnloadImageUri", "basic");
+                //작성시간 put
+                Calendar time = Calendar.getInstance();
+                String dates = format1.format(time.getTime());
+                bundle.putString("dates", dates);
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -283,5 +284,17 @@ public class WriteActivity extends AppCompatActivity {
             asyncDialog.dismiss();
             super.onPostExecute(result);
         }
+    }
+
+    public void loading(){
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        final ProgressDialog progressDialog = new ProgressDialog(WriteActivity.this);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setMessage("잠시만 기다려 주세요");
+                        progressDialog.show();
+                    }
+                }, 100);
     }
 }

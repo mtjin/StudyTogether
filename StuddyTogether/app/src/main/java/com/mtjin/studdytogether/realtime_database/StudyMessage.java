@@ -7,18 +7,20 @@ public class StudyMessage {
     private String image; //사용자이미지
     private String photo; // 포스팅하는 사진
     private String age; //나이
+    private String dates; //글쓴날짜
 
-    public StudyMessage(){
+    public StudyMessage() {
 
     }
 
-    public StudyMessage(String title, String nickName, String content, String image, String photo, String age) {
+    public StudyMessage(String title, String nickName, String content, String image, String photo, String age, String dates) {
         this.title = title;
         this.nickName = nickName;
         this.content = content;
         this.image = image;
         this.photo = photo;
-        this.age =age;
+        this.age = age;
+        this.dates = dates;
     }
 
     public String getTitle() {
@@ -68,6 +70,15 @@ public class StudyMessage {
     public void setAge(String age) {
         this.age = age;
     }
+
+    public String getDates() {
+        return dates;
+    }
+
+    public void setDates(String dates) {
+        this.dates = dates;
+    }
+
 }
 
 

@@ -57,6 +57,7 @@ public class SeoulActivity extends AppCompatActivity {
         ImageView messageImageView;
         TextView messageTextView;
         CircleImageView photoImageView;
+        TextView datesTextView;
 
 
         public MessageViewHolder(@NonNull View itemView) {
@@ -67,6 +68,7 @@ public class SeoulActivity extends AppCompatActivity {
             messageImageView = itemView.findViewById(R.id.message_iv_photo); //업로드한사진
             messageTextView = itemView.findViewById(R.id.message_tv_message);
             photoImageView = itemView.findViewById(R.id.message_iv_profile); //내 프로필사진
+            datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
         }
     }
 
@@ -110,6 +112,7 @@ public class SeoulActivity extends AppCompatActivity {
                }else{
                    //사진첨부안했으니 안올림
                }
+               holder.datesTextView.setText(model.getDates());
             }
 
             @NonNull
@@ -169,7 +172,8 @@ public class SeoulActivity extends AppCompatActivity {
                 String title = bundle.getString("title");
                 String contents = bundle.getString("contents");
                 String imageUri = bundle.getString("donwnloadImageUri"); //글에올린사진
-                mStudyMessage = new StudyMessage(title, mNickName, contents, mImage, imageUri,mAge);
+                String dates = bundle.getString("dates");
+                mStudyMessage = new StudyMessage(title, mNickName, contents, mImage, imageUri,mAge, dates);
 
                 //리사이클러뷰에 쓴 글 추가
                 mSeoulDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.
