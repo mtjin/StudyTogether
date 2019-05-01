@@ -1,13 +1,24 @@
 package com.mtjin.studdytogether;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,8 +51,12 @@ import com.mtjin.studdytogether.realtime_database.Profile;
 import org.w3c.dom.Comment;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,14 +74,19 @@ public class ProfileActivity extends AppCompatActivity {
     private String mAge; //나이대
     private String mImage; //프로필사진
     private Uri mDownloadImageUri; //프로필사진 스토리지 URI
-    private  Bitmap img; //비트맵 프로필사진
+    private Bitmap img; //비트맵 프로필사진
     private FirebaseAuth mFirebaseAuth; //인증객체
     private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리지
 
+    private String mCurrentPhotoPath; //카메라로 찍은 사진 저장할 루트경로
+
     //RequestCode
     final static int PICK_IMAGE = 1;
+
+    //로딩 프로그래스 다이얼로그
+     ProgressDialog progressDialog;
 
     Profile profile; //데이터베이스에 저장 할 객체
     ArrayList<String> sexArrayList; //스피너 리스트
@@ -81,6 +101,16 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // 6.0 마쉬멜로우 이상일 경우에는 권한 체크 후 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "권한 설정 완료");
+            } else {
+                Log.d(TAG, "권한 설정 요청");
+                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -98,39 +128,30 @@ public class ProfileActivity extends AppCompatActivity {
         mPhotoCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override //이미지 불러오기기
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE);
+                photoDialogRadio(); //갤러리에서 불러오기 or 사진찍어서 불러오기
             }
         });
 
         DatabaseReference databaseReference = mProfieDatabaseReference;
-        Log.d("DDDDDD", databaseReference.toString() + "");
+        Log.d(TAG, databaseReference.toString() + "");
 
     }
 
     @Override //갤러리에서 이미지 불러온 후 행동
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == PICK_IMAGE) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                try {
-                  /*  mPhotoCircleImageView.setImageURI(data.getData());
-                    mImage = data.getData()+"";*/
-                    // 선택한 이미지에서 비트맵 생성
-                    InputStream in = getContentResolver().openInputStream(data.getData());
-                     img = BitmapFactory.decodeStream(in);
-                    in.close();
-                    // 이미지 표시
-                    mPhotoCircleImageView.setImageBitmap(img);
-                    mImage = data.getData() + "";//사용할려면 uri.parse함수 사용해야함
-                    Log.d("ProfileActivityTAG", data.getData() + "");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            try {
+                InputStream in = getContentResolver().openInputStream(data.getData());
+                img = BitmapFactory.decodeStream(in);
+                in.close();
+                // 이미지 표시
+                mPhotoCircleImageView.setImageBitmap(img);
+                mImage = data.getData() + "";//사용할려면 uri.parse함수 사용해야함
+                Log.d(TAG, data.getData() + "");
+                Log.d(TAG, img+ "");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -168,26 +189,8 @@ public class ProfileActivity extends AppCompatActivity {
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
-        mProfileRef = mStorageRef.child(mUid+"profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
+        mProfileRef = mStorageRef.child(mUid + "profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
         Log.d("PROFILE22", mEmail);
-
-
-
-    /*    ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                Boolean a = dataSnapshot.exists();
-                Log.d("AAAAA", a +"");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        mProfieDatabaseReference.child("SSS").addValueEventListener(postListener);*/
-
 
         //ok버튼 클릭시
         mOkButton.setOnClickListener(new View.OnClickListener() {
@@ -198,17 +201,8 @@ public class ProfileActivity extends AppCompatActivity {
                 if (mNickName.length() > 7 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
-                    //로딩
-                    new android.os.Handler().postDelayed(
-                            new Runnable() {
-                                public void run() {
-                                    final ProgressDialog progressDialog = new ProgressDialog(ProfileActivity.this);
-                                    progressDialog.setIndeterminate(true);
-                                    progressDialog.setMessage("잠시만 기다려 주세요");
-                                    progressDialog.show();
-                                }
-                            }, 100);
-                    if(img != null){
+                    loading();
+                    if (img != null) {
                         //파이어베이스 스토리지에 업로드
                         Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -230,22 +224,23 @@ public class ProfileActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     mDownloadImageUri = task.getResult();
-                                    Log.d(TAG+"DOWN", mDownloadImageUri+"");
+                                    Log.d(TAG + "DOWN", mDownloadImageUri + "");
                                     //값 데이터베이스에서 넣어줌
-                                    profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri+"");
+                                    profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri + "");
                                     //닉네임을 루트로 사용자 정보 저장
                                     mProfieDatabaseReference.child(mUid).setValue(profile);
                                     //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                                     saveProfileSharedPreferences(profile);
                                     Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                                     startActivity(intent);
+                                    progressDialog.dismiss(); //로딩종료
                                 } else {
                                     // Handle failures
                                     Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-                    }else{ //프로필이미지 기본으로할경우
+                    } else { //프로필이미지 기본으로할경우
                         Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                         //값 데이터베이스에서 넣어줌
                         profile = new Profile(mEmail, mNickName, mSex, mAge, "basic");
@@ -255,6 +250,7 @@ public class ProfileActivity extends AppCompatActivity {
                         saveProfileSharedPreferences(profile);
                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                         startActivity(intent);
+                        progressDialog.dismiss(); //로딩종료
                     }
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
@@ -334,12 +330,39 @@ public class ProfileActivity extends AppCompatActivity {
         mAgeSpinner.setAdapter(ageAdapter);
     }
 
- /*   public Boolean isExistEmail(String email){
-        Query query = mProfieDatabaseReference; //쿼리문의 수행위치 저장 (파이어베이스 리얼타임데이터베이스의 하위에있는 MESSAGES_CHILD에서 데이터를 가져오겠다는 뜻이다. ==> 메세지를 여기다 저장했으므로)
-
+    //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
+    private void photoDialogRadio() {
+        final CharSequence[] PhotoModels = {"갤러리에서 가져오기","기본사진으로 하기"};
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        //alt_bld.setIcon(R.drawable.icon);
+        alt_bld.setTitle("사진 가져오기");
+        alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(ProfileActivity.this, PhotoModels[item] + "가 선택되었습니다.", Toast.LENGTH_SHORT).show();
+                if (item == 0) { //갤러리
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, PICK_IMAGE);
+                } else { //기본화면으로하기
+                    mPhotoCircleImageView.setImageResource(R.drawable.profile);
+                    mImage = "";
+                }
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
-
-    public  Boolean isExistNickName(String nickName){
-
-    }*/
+    public void loading(){
+        //로딩
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog = new ProgressDialog(ProfileActivity.this);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setMessage("잠시만 기다려 주세요");
+                        progressDialog.show();
+                    }
+                }, 100);
+    }
 }
