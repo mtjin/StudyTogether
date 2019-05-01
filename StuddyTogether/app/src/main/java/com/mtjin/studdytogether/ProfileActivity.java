@@ -80,8 +80,6 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리지
 
-    private String mCurrentPhotoPath; //카메라로 찍은 사진 저장할 루트경로
-
     //RequestCode
     final static int PICK_IMAGE = 1;
 
@@ -101,16 +99,6 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        // 6.0 마쉬멜로우 이상일 경우에는 권한 체크 후 권한 요청
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "권한 설정 완료");
-            } else {
-                Log.d(TAG, "권한 설정 요청");
-                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
-        }
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
