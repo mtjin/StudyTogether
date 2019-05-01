@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="나이: "
+            android:text="|   "
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -93,10 +93,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:background="@drawable/thin_down_border">
+
         <ImageView
             android:id="@+id/message_iv_photo"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="120dp"
             android:scaleType="fitXY"

@@ -1,8 +1,10 @@
 package com.mtjin.studdytogether.cities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -202,4 +204,6 @@ public class SeoulActivity extends AppCompatActivity {
         super.onStop();
         mFirebaseAdapter.stopListening(); // FirebaseRecyclerAdapter 실시간 쿼리 중지
     }
+
+
 }

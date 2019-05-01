@@ -1,10 +1,12 @@
 package com.mtjin.studdytogether;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -57,12 +59,13 @@ public class WriteActivity extends AppCompatActivity {
     //값들
     private String mImage;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
         setTitle("서울지역");
+
+        //파이어베이스 스토리지 얻어옴
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         saveButton = findViewById(R.id.write_btn_save);
@@ -134,9 +137,20 @@ public class WriteActivity extends AppCompatActivity {
         final String title = titleEditText.getText().toString();
         final String contents = contentsEditText.getText().toString();
         if(title !=null && contents !=null){
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            final ProgressDialog progressDialog = new ProgressDialog(WriteActivity.this);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setMessage("잠시만 기다려 주세요");
+                            progressDialog.show();
+                        }
+                    }, 100);
             if(img != null){
                 //파이어베이스 스토리지에 업로드
                 Toast.makeText(WriteActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
+                /*ProgressDialog pd = ProgressDialog.show(WriteActivity.this, "로딩중", "페이지 로딩 중입니다...");
+                pd.dismiss();*/
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] datas = baos.toByteArray();
@@ -233,5 +247,41 @@ public class WriteActivity extends AppCompatActivity {
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mMessageImageRef = mStorageRef.child(mUid+"messageImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
        // Log.d("PROFILE22", mEmail);
+    }
+
+    //로딩 구현
+    private class CheckTypesTask extends AsyncTask<Void, Void, Void> {
+
+        ProgressDialog asyncDialog = new ProgressDialog(
+                getApplicationContext());
+
+        @Override
+        protected void onPreExecute() {
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage("업로드 중입니다....");
+
+            // show dialog
+            asyncDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    //asyncDialog.setProgress(i * 30);
+                    Thread.sleep(400);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            asyncDialog.dismiss();
+            super.onPostExecute(result);
+        }
     }
 }
