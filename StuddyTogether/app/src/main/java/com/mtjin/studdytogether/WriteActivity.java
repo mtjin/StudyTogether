@@ -55,6 +55,9 @@ public class WriteActivity extends AppCompatActivity {
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mMessageImageRef; //게시물이미지 담을 파베 스토리지
 
+    //프로그래스 로딩 다이얼로그
+     ProgressDialog progressDialog;
+
     //RequestCode
     final static int PICK_IMAGE = 1;
     //값들
@@ -250,47 +253,11 @@ public class WriteActivity extends AppCompatActivity {
        // Log.d("PROFILE22", mEmail);
     }
 
-    //로딩 구현
-    private class CheckTypesTask extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog asyncDialog = new ProgressDialog(
-                getApplicationContext());
-
-        @Override
-        protected void onPreExecute() {
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            asyncDialog.setMessage("업로드 중입니다....");
-
-            // show dialog
-            asyncDialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                for (int i = 0; i < 5; i++) {
-                    //asyncDialog.setProgress(i * 30);
-                    Thread.sleep(400);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            asyncDialog.dismiss();
-            super.onPostExecute(result);
-        }
-    }
-
     public void loading(){
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        final ProgressDialog progressDialog = new ProgressDialog(WriteActivity.this);
+                        progressDialog = new ProgressDialog(WriteActivity.this);
                         progressDialog.setIndeterminate(true);
                         progressDialog.setMessage("잠시만 기다려 주세요");
                         progressDialog.show();

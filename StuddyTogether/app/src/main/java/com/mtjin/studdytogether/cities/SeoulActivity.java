@@ -144,7 +144,7 @@ public class SeoulActivity extends AppCompatActivity {
             }
         });
 
-        // 새로운 글이 추가되면 제일 하단으로 포지션 이동
+       /* // 새로운 글이 추가되면 제일 하단으로 포지션 이동
         mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -159,7 +159,7 @@ public class SeoulActivity extends AppCompatActivity {
                     mMessageRecyclerView.scrollToPosition(positionStart);
                 }
             }
-        });
+        });*/
     }
 
     @Override
