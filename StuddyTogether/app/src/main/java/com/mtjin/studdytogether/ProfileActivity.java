@@ -72,19 +72,20 @@ public class ProfileActivity extends AppCompatActivity {
     private String mSex; //성별 남자 or 여자
     private String mEmail; //이메일
     private String mAge; //나이대
-    private String mImage; //프로필사진
+    Boolean isSelectedImage; //프로필사진 선택햇는지 여부
     private Uri mDownloadImageUri; //프로필사진 스토리지 URI
-    private Bitmap img; //비트맵 프로필사진
+    private Bitmap img; //비트맵 프로필사진 (이걸
     private FirebaseAuth mFirebaseAuth; //인증객체
     private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리지
 
     //RequestCode
-    final static int PICK_IMAGE = 1;
+    final static int PICK_IMAGE = 1; //갤러리에서 사진선택
+    final static int CAPTURE_IMAGE = 2;  //카메라로찍은 사진선택
 
-    //로딩 프로그래스 다이얼로그
-     ProgressDialog progressDialog;
+    ProgressDialog progressDialog;    //로딩 프로그래스 다이얼로그
+    private String mCurrentPhotoPath; //카메라로 찍은 사진 저장할 루트경로
 
     Profile profile; //데이터베이스에 저장 할 객체
     ArrayList<String> sexArrayList; //스피너 리스트
@@ -99,6 +100,16 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // 6.0 마쉬멜로우 이상일 경우에는 권한 체크 후 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "권한 설정 완료");
+            } else {
+                Log.d(TAG, "권한 설정 요청");
+                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -135,11 +146,22 @@ public class ProfileActivity extends AppCompatActivity {
                 in.close();
                 // 이미지 표시
                 mPhotoCircleImageView.setImageBitmap(img);
-                mImage = data.getData() + "";//사용할려면 uri.parse함수 사용해야함
                 Log.d(TAG, data.getData() + "");
-                Log.d(TAG, img+ "");
+                Log.d(TAG, img + "");
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }else if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    File file = new File(mCurrentPhotoPath);
+                    InputStream in = getContentResolver().openInputStream(Uri.fromFile(file));
+                    img = BitmapFactory.decodeStream(in);
+                    mPhotoCircleImageView.setImageBitmap(img);
+                    in.close();;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -320,10 +342,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
     private void photoDialogRadio() {
-        final CharSequence[] PhotoModels = {"갤러리에서 가져오기","기본사진으로 하기"};
+        final CharSequence[] PhotoModels = {"갤러리에서 가져오기", "카메라로 촬영 후 가져오기", "기본사진으로 하기"};
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
         //alt_bld.setIcon(R.drawable.icon);
-        alt_bld.setTitle("사진 가져오기");
+        alt_bld.setTitle("프로필사진 설정");
         alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Toast.makeText(ProfileActivity.this, PhotoModels[item] + "가 선택되었습니다.", Toast.LENGTH_SHORT).show();
@@ -332,16 +354,19 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(intent, PICK_IMAGE);
+                }else if(item == 1){ //카메라찍은 사진가져오기
+                    takePictureFromCameraIntent();
                 } else { //기본화면으로하기
                     mPhotoCircleImageView.setImageResource(R.drawable.profile);
-                    mImage = "";
+                    img = null;
                 }
             }
         });
         AlertDialog alert = alt_bld.create();
         alert.show();
     }
-    public void loading(){
+
+    public void loading() {
         //로딩
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -352,5 +377,45 @@ public class ProfileActivity extends AppCompatActivity {
                         progressDialog.show();
                     }
                 }, 100);
+    }
+
+    //카메라로 촬영한 이미지를파일로 저장해주는 함수
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    //카메라 인텐트실행 함수
+    private void takePictureFromCameraIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.mtjin.studdytogether.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAPTURE_IMAGE);
+            }
+        }
     }
 }
