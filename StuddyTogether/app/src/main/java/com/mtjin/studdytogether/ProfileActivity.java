@@ -72,7 +72,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String mSex; //성별 남자 or 여자
     private String mEmail; //이메일
     private String mAge; //나이대
-    Boolean isSelectedImage; //프로필사진 선택햇는지 여부
     private Uri mDownloadImageUri; //프로필사진 스토리지 URI
     private Bitmap img; //비트맵 프로필사진 (이걸
     private FirebaseAuth mFirebaseAuth; //인증객체
@@ -212,7 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
                     loading();
-                    if (img != null) {
+                    if (img != null) { //프로필사진을 지정했을 경우
                         //파이어베이스 스토리지에 업로드
                         Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -247,6 +246,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 } else {
                                     // Handle failures
                                     Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                    loadingEnd();//로딩종료
                                 }
                             }
                         });
@@ -259,8 +259,8 @@ public class ProfileActivity extends AppCompatActivity {
                         //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                         saveProfileSharedPreferences(profile);
                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                        loadingEnd();
                         startActivity(intent);
-                        progressDialog.dismiss(); //로딩종료
                     }
                 } else { //공백을 입력한 경우
                     Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
@@ -376,7 +376,17 @@ public class ProfileActivity extends AppCompatActivity {
                         progressDialog.setMessage("잠시만 기다려 주세요");
                         progressDialog.show();
                     }
-                }, 100);
+                }, 0);
+    }
+
+    public void loadingEnd(){
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                },0) ;
     }
 
     //카메라로 촬영한 이미지를파일로 저장해주는 함수
