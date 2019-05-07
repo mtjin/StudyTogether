@@ -43,6 +43,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -94,6 +96,9 @@ public class ProfileActivity extends AppCompatActivity {
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mProfieDatabaseReference = mRootDatabaseReference.child("profile"); //profile이란 이름의 하위 데이터베이스
 
+    FirebaseFirestore db; //파이어스토어 디비
+    Boolean hasAlreadyId = false; //이미 아이디를 겆고있는지
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +115,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference(); //스토리지
+        db = FirebaseFirestore.getInstance(); //파이어스토어
 
         mNickNameEditText = findViewById(R.id.profile_pt_nickname);
         mSexSpinner = findViewById(R.id.profile_sp_sex);
@@ -200,6 +206,8 @@ public class ProfileActivity extends AppCompatActivity {
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
         mProfileRef = mStorageRef.child(mUid + "profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
         Log.d("PROFILE22", mEmail);
+
+
 
         //ok버튼 클릭시
         mOkButton.setOnClickListener(new View.OnClickListener() {
@@ -428,4 +436,5 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
 }

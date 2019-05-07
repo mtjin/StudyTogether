@@ -63,7 +63,7 @@ public class WriteActivity extends AppCompatActivity {
     //값들
     private String mImage;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
+    SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
