@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">스터디투게더</string>
+    <!--페이스북로그인-->
+    <string name="facebook_app_id">397738420810529</string>
+    <string name="fb_login_protocol_scheme">fb397738420810529</string>
+
 </resources>

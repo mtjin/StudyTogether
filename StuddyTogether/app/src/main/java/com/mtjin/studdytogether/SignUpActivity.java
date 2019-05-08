@@ -1,6 +1,7 @@
 package com.mtjin.studdytogether;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,8 +22,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText mIdEditText;
     private EditText mPasswordEditText;
+    private EditText mPassConfirmEditText;
     private String mEmail;
     private String mPassword;
+    private String mPassConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         mIdEditText = findViewById(R.id.signup_pt_id);
         mPasswordEditText = findViewById(R.id.signup_pt_password);
+        mPassConfirmEditText = findViewById(R.id.signup_pt_passconfirm);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -40,22 +44,27 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mEmail = mIdEditText.getText().toString().trim();
                 mPassword = mPasswordEditText.getText().toString().trim();
+                mPassConfirm = mPassConfirmEditText.getText().toString().trim();
 
-                mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
-                        .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(mPassword.equals(mPassConfirm)) {
 
-                                if (task.isSuccessful()) {
-                                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    Toast.makeText(SignUpActivity.this, "등록 에러", Toast.LENGTH_SHORT).show();
-                                    return;
+                    mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
+                            .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                    if (task.isSuccessful()) {
+                                        Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(SignUpActivity.this, "등록 에러", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }else{
+                    Toast.makeText(SignUpActivity.this, "패스워드가 서로 다릅니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
