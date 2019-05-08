@@ -68,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Spinner mSexSpinner;
     private Spinner mAgeSpinner;
     private Button mOkButton;
+    private Button mCheckidButton; //닉네임중복확인버튼
     private CircleImageView mPhotoCircleImageView;
     private String mUid; //사용자 토큰 고유 아이디
     private String mNickName; //닉네임
@@ -95,10 +96,12 @@ public class ProfileActivity extends AppCompatActivity {
     ArrayAdapter<String> ageAdapter;
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mProfieDatabaseReference = mRootDatabaseReference.child("profile"); //profile이란 이름의 하위 데이터베이스
-
+    DatabaseReference mNickNameDatabaseReference = mRootDatabaseReference.child("nickNameList"); //닉네임 담아놀 하위 데이터베이스
     FirebaseFirestore db; //파이어스토어 디비
-    Boolean hasAlreadyId = false; //이미 아이디를 겆고있는지
-
+    String tmpNickName; //중복확인용 임시닉네임
+    Boolean isNickExisted1;
+    Boolean isNickExisted2;
+    Boolean isCheckid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
         mSexSpinner = findViewById(R.id.profile_sp_sex);
         mAgeSpinner = findViewById(R.id.profile_sp_age);
         mOkButton = findViewById(R.id.profile_btn_ok);
+        mCheckidButton = findViewById(R.id.profile_btn_checkid);
         mPhotoCircleImageView = findViewById(R.id.profile_iv_photo);
         mPhotoCircleImageView.setClickable(true);
 
@@ -136,8 +140,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference databaseReference = mProfieDatabaseReference;
-        Log.d(TAG, databaseReference.toString() + "");
 
     }
 
@@ -171,30 +173,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public void basicQueryValueListener() {
-       /* String myUserId = getUid();
-        Query myTopPostsQuery = databaseReference.child("user-posts").child(myUserId)
-                .orderByChild("starCount");
-
-        // [START basic_query_value_listener]
-        // My top posts by number of stars
-        myTopPostsQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    // TODO: handle the post
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        });
-        // [END basic_query_value_listener]*/
-    }
 
     @Override
     protected void onStart() {
@@ -207,6 +185,79 @@ public class ProfileActivity extends AppCompatActivity {
         mProfileRef = mStorageRef.child(mUid + "profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
         Log.d("PROFILE22", mEmail);
 
+        //초기화
+        isCheckid = false;
+        isNickExisted1 = false;
+        isNickExisted2 =  false;
+
+        mCheckidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tmpNickName  = mNickNameEditText.getText().toString().trim();
+                if(tmpNickName.length() > 7 || tmpNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(tmpNickName))){
+                    Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Log.d("DDDD", "IN mCheckidButton");
+                    isCheckid = true;
+                    mNickNameDatabaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(tmpNickName)) { //중복닉네임
+                               // Toast.makeText(getApplicationContext(), "중복 닉네임이 이미 있습니다.", Toast.LENGTH_LONG).show();
+                                isNickExisted1 = true;
+                            } else { //사용가능닉네임
+                                Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                isNickExisted1 = false;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    mProfieDatabaseReference.child(mUid).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("nickName")) {
+                                if (dataSnapshot.getValue().equals(tmpNickName)) {
+                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                    isNickExisted2 = true;
+                                } else {
+                                    if(isNickExisted1) {
+                                        if(getOriginalNickName().equals(tmpNickName)){
+                                            Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
+                                        }else {
+                                            Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }else {
+                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                    }
+                                    isNickExisted2 = false;
+                                }
+                            } else {
+                                if(isNickExisted1) {
+                                    if(getOriginalNickName().equals(tmpNickName)){
+                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
+                                    }else {
+                                        Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
+                                    }
+                                }else {
+                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
+                                }
+                                isNickExisted2 = false;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+
 
 
         //ok버튼 클릭시
@@ -215,67 +266,84 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
-                if (mNickName.length() > 7 || mNickName.length() <= 0 || (DataValidation.checkOnlyCharacters(mNickName) == false)) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
-                    Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
-                } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
-                    loading();
-                    if (img != null) { //프로필사진을 지정했을 경우
-                        //파이어베이스 스토리지에 업로드
-                        Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] datas = baos.toByteArray();
-                        UploadTask uploadTask = mProfileRef.putBytes(datas);
-                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
 
-                                // Continue with the task to get the download URL
-                                return mProfileRef.getDownloadUrl();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    mDownloadImageUri = task.getResult();
-                                    Log.d(TAG + "DOWN", mDownloadImageUri + "");
-                                    //값 데이터베이스에서 넣어줌
-                                    profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri + "");
-                                    //닉네임을 루트로 사용자 정보 저장
-                                    mProfieDatabaseReference.child(mUid).setValue(profile);
-                                    //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
-                                    saveProfileSharedPreferences(profile);
-                                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    progressDialog.dismiss(); //로딩종료
-                                } else {
-                                    // Handle failures
-                                    Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                                    loadingEnd();//로딩종료
+                if(getOriginalNickName().equals(mNickName) || isCheckid && mNickName.equals(tmpNickName) && (!isNickExisted1 || isNickExisted2)) {
+                    if (mNickName.length() > 7 || mNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(mNickName))) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
+                        Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
+                    } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
+                        loading();
+                        if (img != null) { //프로필사진을 지정했을 경우
+                            //파이어베이스 스토리지에 업로드
+                            Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] datas = baos.toByteArray();
+                            UploadTask uploadTask = mProfileRef.putBytes(datas);
+                            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+
+                                    // Continue with the task to get the download URL
+                                    return mProfileRef.getDownloadUrl();
                                 }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        mDownloadImageUri = task.getResult();
+                                        Log.d(TAG + "DOWN", mDownloadImageUri + "");
+                                        //디비에넣기전 이전 아이디는 디비에서삭제
+                                        if(!getOriginalNickName().equals(mNickName)){
+                                            mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
+                                        }
+                                        //값 데이터베이스에서 넣어줌
+                                        profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri + "");
+                                        //사용자토큰을 루트로 사용자 정보 저장
+                                        mProfieDatabaseReference.child(mUid).setValue(profile);
+                                        //닉네임리스트에 닉네임저장
+                                        mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                                        //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                                        saveProfileSharedPreferences(profile);
+                                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        progressDialog.dismiss(); //로딩종료
+                                    } else {
+                                        // Handle failures
+                                        Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                        loadingEnd();//로딩종료
+                                    }
+                                }
+                            });
+                        } else { //프로필이미지 기본으로할경우
+                            Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
+                            //디비에넣기전 이전 아이디는 디비에서삭제
+                            if(!getOriginalNickName().equals(mNickName)){
+                                mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                             }
-                        });
-                    } else { //프로필이미지 기본으로할경우
-                        Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
-                        //값 데이터베이스에서 넣어줌
-                        profile = new Profile(mEmail, mNickName, mSex, mAge, "basic");
-                        //닉네임을 루트로 사용자 정보 저장
-                        mProfieDatabaseReference.child(mUid).setValue(profile);
-                        //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
-                        saveProfileSharedPreferences(profile);
-                        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                        loadingEnd();
-                        startActivity(intent);
+                            //값 데이터베이스에서 넣어줌
+                            profile = new Profile(mEmail, mNickName, mSex, mAge, "basic");
+                            //사용자토큰을 루트로 사용자 정보 저장
+                            mProfieDatabaseReference.child(mUid).setValue(profile);
+                            //닉네임리스트에 닉네임저장
+                            mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                            //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                            saveProfileSharedPreferences(profile);
+                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                            loadingEnd();
+                            startActivity(intent);
+                        }
+                    } else { //공백을 입력한 경우
+                        Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
                     }
-                } else { //공백을 입력한 경우
-                    Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(ProfileActivity.this, "아이디 중복확인을 해주세요", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
+
     }
 
     //로컬에 프로필정보 저장 (확인 버튼 클릭시 호출)
@@ -294,6 +362,11 @@ public class ProfileActivity extends AppCompatActivity {
         Log.d(TAG, profile.getAge());
         Log.d(TAG, profile.getImage());
         editor.commit();
+    }
+
+    public String getOriginalNickName(){
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
+        return pref.getString("nickName","");
     }
 
 
