@@ -34,6 +34,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //파이어베이스 익명인증
     implementation 'com.google.firebase:firebase-auth:16.2.1'
+    //파이어베이스 이메일 인증
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
     //파이어베이스
     implementation 'com.google.firebase:firebase-core:16.0.8'
     //circleImageView
