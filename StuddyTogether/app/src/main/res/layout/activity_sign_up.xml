@@ -7,35 +7,17 @@
     tools:context=".SignUpActivity"
     android:background="@color/yellowSplash">
 
-    <TextView
-        android:id="@+id/signup_tv_signuptext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="회원가입"
-        android:textColor="#FFFFFF"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
-
     <EditText
         android:id="@+id/signup_pt_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="80dp"
         android:ems="10"
         android:hint="가입할 이메일을 입력해주세요"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_tv_signuptext"
-        app:layout_constraintVertical_bias="0.120000005" />
+        app:layout_constraintTop_toBottomOf="@+id/signup_tv_text4" />
 
     <EditText
         android:id="@+id/signup_pt_password"
@@ -90,5 +72,53 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_btn_signup" />
+
+    <TextView
+        android:id="@+id/signup_tv_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="1dp"
+        android:text="Email"
+        app:layout_constraintBottom_toTopOf="@+id/signup_pt_id"
+        app:layout_constraintEnd_toStartOf="@+id/signup_pt_id" />
+
+    <TextView
+        android:id="@+id/signup_tv_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="1dp"
+        android:text="PW"
+        app:layout_constraintBottom_toTopOf="@+id/signup_pt_password"
+        app:layout_constraintEnd_toStartOf="@+id/signup_pt_password" />
+
+    <TextView
+        android:id="@+id/signup_tv_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="1dp"
+        android:text="PW confirm"
+        app:layout_constraintBottom_toTopOf="@+id/signup_pt_passconfirm"
+        app:layout_constraintEnd_toStartOf="@+id/signup_pt_passconfirm" />
+
+    <TextView
+        android:id="@+id/signup_tv_text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"
+        android:text="Welcome to With Us"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.17000002" />
 
 </android.support.constraint.ConstraintLayout>

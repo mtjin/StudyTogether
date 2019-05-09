@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,11 +77,16 @@ public class ProfileActivity extends AppCompatActivity {
     private String mEmail; //이메일
     private String mAge; //나이대
     private Uri mDownloadImageUri; //프로필사진 스토리지 URI
+    private String mTmpDownloadImageUri; //Shared에서 받아올떄 String형이라 임시로 받아오는데 사용
+    private int mTmpAge; //스피너 기존값 초기세팅해주기위해 사용
+    private int mTmpSex; // ''
     private Bitmap img; //비트맵 프로필사진 (이걸
     private FirebaseAuth mFirebaseAuth; //인증객체
     private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
     private StorageReference mStorageRef; //파이어베이스 스토리지
-    private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리지
+    private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리
+    private Boolean isSavedLogData; //프로필 저장되있는게 있는지
+    private SharedPreferences mAppData; //프로필 자동불러오기용
 
     //RequestCode
     final static int PICK_IMAGE = 1; //갤러리에서 사진선택
@@ -107,6 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setTitle("프로필");
 
         // 6.0 마쉬멜로우 이상일 경우에는 권한 체크 후 권한 요청
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -131,6 +138,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         //스피너 설정
         spinnerDo();
+        //Shared에서 이전에 저장했던것들 변수에저장
+       loadShared();
+        //Shared에서 꺼내온것들을 각각 알맞게 뷰에 세팅 (과거했던걸 세팅해놔줌)
+     loadInitalSetting();
 
         //프로필이미지 클릭 시
         mPhotoCircleImageView.setOnClickListener(new View.OnClickListener() {
@@ -155,18 +166,22 @@ public class ProfileActivity extends AppCompatActivity {
                 mPhotoCircleImageView.setImageBitmap(img);
                 Log.d(TAG, data.getData() + "");
                 Log.d(TAG, img + "");
+
+                mTmpDownloadImageUri = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK) {
             if (resultCode == RESULT_OK) {
                 try {
                     File file = new File(mCurrentPhotoPath);
                     InputStream in = getContentResolver().openInputStream(Uri.fromFile(file));
                     img = BitmapFactory.decodeStream(in);
                     mPhotoCircleImageView.setImageBitmap(img);
-                    in.close();;
-                }catch (Exception e){
+                    in.close();
+
+                    mTmpDownloadImageUri = null;
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -182,28 +197,27 @@ public class ProfileActivity extends AppCompatActivity {
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
-        mProfileRef = mStorageRef.child(mUid + "profileImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
-        Log.d("PROFILE22", mEmail);
+        mProfileRef = mStorageRef.child("profileImage").child(mUid); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
 
         //초기화
         isCheckid = false;
         isNickExisted1 = false;
-        isNickExisted2 =  false;
+        isNickExisted2 = false;
 
         mCheckidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tmpNickName  = mNickNameEditText.getText().toString().trim();
-                if(tmpNickName.length() > 7 || tmpNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(tmpNickName))){
+                tmpNickName = mNickNameEditText.getText().toString().trim();
+                if (tmpNickName.length() > 7 || tmpNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(tmpNickName))) {
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Log.d("DDDD", "IN mCheckidButton");
                     isCheckid = true;
                     mNickNameDatabaseReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(tmpNickName)) { //중복닉네임
-                               // Toast.makeText(getApplicationContext(), "중복 닉네임이 이미 있습니다.", Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getApplicationContext(), "중복 닉네임이 이미 있습니다.", Toast.LENGTH_LONG).show();
                                 isNickExisted1 = true;
                             } else { //사용가능닉네임
                                 Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
@@ -224,26 +238,29 @@ public class ProfileActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
                                     isNickExisted2 = true;
                                 } else {
-                                    if(isNickExisted1) {
-                                        if(getOriginalNickName().equals(tmpNickName)){
-                                            Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
-                                        }else {
+                                    if (isNickExisted1) {
+                                        if (getOriginalNickName().equals(tmpNickName)) {
+                                            Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                            ;
+                                        } else {
                                             Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
                                         }
-                                    }else {
+                                    } else {
                                         Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
                                     }
                                     isNickExisted2 = false;
                                 }
                             } else {
-                                if(isNickExisted1) {
-                                    if(getOriginalNickName().equals(tmpNickName)){
-                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
-                                    }else {
+                                if (isNickExisted1) {
+                                    if (getOriginalNickName().equals(tmpNickName)) {
+                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                        ;
+                                    } else {
                                         Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
                                     }
-                                }else {
-                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();;
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                    ;
                                 }
                                 isNickExisted2 = false;
                             }
@@ -259,7 +276,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-
         //ok버튼 클릭시
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,12 +283,12 @@ public class ProfileActivity extends AppCompatActivity {
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
 
-                if(getOriginalNickName().equals(mNickName) || isCheckid && mNickName.equals(tmpNickName) && (!isNickExisted1 || isNickExisted2)) {
+                if (getOriginalNickName().equals(mNickName) || isCheckid && mNickName.equals(tmpNickName) && (!isNickExisted1 || isNickExisted2)) {
                     if (mNickName.length() > 7 || mNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(mNickName))) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
                         Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                     } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
                         loading();
-                        if (img != null) { //프로필사진을 지정했을 경우
+                        if (img != null && mTmpDownloadImageUri==null) { //프로필사진을 지정했을 경우
                             //파이어베이스 스토리지에 업로드
                             Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -296,7 +312,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         mDownloadImageUri = task.getResult();
                                         Log.d(TAG + "DOWN", mDownloadImageUri + "");
                                         //디비에넣기전 이전 아이디는 디비에서삭제
-                                        if(!getOriginalNickName().equals(mNickName)){
+                                        if (!getOriginalNickName().equals(mNickName)) {
                                             mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                                         }
                                         //값 데이터베이스에서 넣어줌
@@ -309,7 +325,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         saveProfileSharedPreferences(profile);
                                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                                         startActivity(intent);
-                                        progressDialog.dismiss(); //로딩종료
+                                        loadingEnd();//로딩종료
                                     } else {
                                         // Handle failures
                                         Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
@@ -317,10 +333,26 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                        } else if (mTmpDownloadImageUri != null) { //과거세팅값으로 한 경우
+                            if (!getOriginalNickName().equals(mNickName)) {
+                                mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
+                            }
+                            //값 데이터베이스에서 넣어줌
+                            profile = new Profile(mEmail, mNickName, mSex, mAge, mTmpDownloadImageUri + "");
+                            //사용자토큰을 루트로 사용자 정보 저장
+                            mProfieDatabaseReference.child(mUid).setValue(profile);
+                            //닉네임리스트에 닉네임저장
+                            mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                            //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
+                            saveProfileSharedPreferences(profile);
+                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            loadingEnd();//로딩종료
+
                         } else { //프로필이미지 기본으로할경우
                             Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                             //디비에넣기전 이전 아이디는 디비에서삭제
-                            if(!getOriginalNickName().equals(mNickName)){
+                            if (!getOriginalNickName().equals(mNickName)) {
                                 mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                             }
                             //값 데이터베이스에서 넣어줌
@@ -338,7 +370,7 @@ public class ProfileActivity extends AppCompatActivity {
                     } else { //공백을 입력한 경우
                         Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(ProfileActivity.this, "아이디 중복확인을 해주세요", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -346,27 +378,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    //로컬에 프로필정보 저장 (확인 버튼 클릭시 호출)
-    public void saveProfileSharedPreferences(Profile profile) {
-        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("email", profile.getEmail());
-        editor.putString("nickName", profile.getNickName());
-        editor.putString("sex", profile.getSex());
-        editor.putString("age", profile.getAge());
-        editor.putString("image", profile.getImage());
 
-        Log.d(TAG, profile.getEmail());
-        Log.d(TAG, profile.getNickName());
-        Log.d(TAG, profile.getSex());
-        Log.d(TAG, profile.getAge());
-        Log.d(TAG, profile.getImage());
-        editor.commit();
-    }
-
-    public String getOriginalNickName(){
+    public String getOriginalNickName() {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
-        return pref.getString("nickName","");
+        return pref.getString("nickName", "");
     }
 
 
@@ -392,6 +407,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSex = sexArrayList.get(position);
+                mTmpSex = position;
                 Toast.makeText(getApplicationContext(), "(" + sexArrayList.get(position) + ") 가 선택되었습니다.", Toast.LENGTH_LONG).show();
             }
 
@@ -405,6 +421,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mAge = ageArrayList.get(position);
+                mTmpAge = position;
                 Toast.makeText(getApplicationContext(), "(" + ageArrayList.get(position) + ") 가 선택되었습니다.", Toast.LENGTH_LONG).show();
             }
 
@@ -435,11 +452,12 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(intent, PICK_IMAGE);
-                }else if(item == 1){ //카메라찍은 사진가져오기
+                } else if (item == 1) { //카메라찍은 사진가져오기
                     takePictureFromCameraIntent();
                 } else { //기본화면으로하기
                     mPhotoCircleImageView.setImageResource(R.drawable.profile);
                     img = null;
+                    mTmpDownloadImageUri = null;
                 }
             }
         });
@@ -460,14 +478,14 @@ public class ProfileActivity extends AppCompatActivity {
                 }, 0);
     }
 
-    public void loadingEnd(){
+    public void loadingEnd() {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     @Override
                     public void run() {
                         progressDialog.dismiss();
                     }
-                },0) ;
+                }, 0);
     }
 
     //카메라로 촬영한 이미지를파일로 저장해주는 함수
@@ -509,5 +527,58 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
+    //로컬에 프로필정보 저장 (확인 버튼 클릭시 호출)
+    public void saveProfileSharedPreferences(Profile profile) {
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("email", profile.getEmail());
+        editor.putString("nickName", profile.getNickName());
+        editor.putString("sex", profile.getSex());
+        editor.putString("age", profile.getAge());
+        editor.putString("image", profile.getImage());
+
+        //스피너 초기값 세팅해줄때 사용
+        editor.putInt("tmpAge", mTmpAge);
+        editor.putInt("tmpSex", mTmpSex);
+
+        Log.d(TAG, profile.getEmail());
+        Log.d(TAG, profile.getNickName());
+        Log.d(TAG, profile.getSex());
+        Log.d(TAG, profile.getAge());
+        Log.d(TAG, profile.getImage());
+        editor.commit();
+    }
+
+    // 설정값을 불러오는 함수
+    private void loadShared() {
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
+        //mEmail = pref.getString("email", "");
+        mNickName = pref.getString("nickName", "");
+        if (pref.getString("image", "").equals("basic") || pref.getString("image", "").equals("")) {
+            mTmpDownloadImageUri = null;
+        } else {
+            mTmpDownloadImageUri = pref.getString("image", "");
+        }
+        mTmpAge = pref.getInt("tmpAge", 0);
+        mTmpSex = pref.getInt("tmpSex", 0);
+    }
+
+    //이전에 했던 값들 미리 띄움
+    public void loadInitalSetting() {
+        mNickNameEditText.setText(mNickName);
+        mAgeSpinner.setSelection(mTmpAge);
+        mSexSpinner.setSelection(mTmpSex);
+        if (mTmpDownloadImageUri != null) {
+            Glide.with(ProfileActivity.this).load(mTmpDownloadImageUri).into(mPhotoCircleImageView);
+            Log.d("GLIDE", mTmpDownloadImageUri);
+        }
+    }
+
+    /*//이전 프로필과 똑같은지
+    public Boolean isSameBefore() {
+
+    }*/
+
 
 }

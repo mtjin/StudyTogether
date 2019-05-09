@@ -73,8 +73,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         FacebookSdk.sdkInitialize(getApplicationContext()); //페북관련(setConetentView 전에해야함  SDK의 앱 활성화 지원 도구가 호출)
         AppEventsLogger.activateApp(this); //페북관련
         setContentView(R.layout.activity_login);
-
-
+        setTitle("로그인");
 
         // 임시저장값 불러오기
         mAppData = getSharedPreferences("appData", MODE_PRIVATE);

@@ -262,6 +262,6 @@ public class WriteActivity extends AppCompatActivity {
                         progressDialog.setMessage("잠시만 기다려 주세요");
                         progressDialog.show();
                     }
-                }, 100);
+                }, 0);
     }
 }
