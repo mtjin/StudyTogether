@@ -128,7 +128,7 @@ public class SeoulActivity extends AppCompatActivity {
         //아래구분선 세팅
         mMessageRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         // 리사이클러뷰에 레이아웃 매니저와 어댑터를 설정한다.
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false); //레이아웃매니저 생성
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true); //레이아웃매니저 생성
         mMessageRecyclerView.setLayoutManager(layoutManager); ////만든 레이아웃매니저 객체를(설정을) 리사이클러 뷰에 설정해줌
         mMessageRecyclerView.setAdapter(mFirebaseAdapter); //어댑터 셋 ( 파이어베이스 어댑터는 액티비티 생명주기에 따라서 상태를 모니터링하게하고 멈추게하고 그런 코드를 작성하도록 되있다.==> 밑에 onStart()와 onStop에 구현해놨다)
 
@@ -147,7 +147,7 @@ public class SeoulActivity extends AppCompatActivity {
             }
         });
 
-       /* // 새로운 글이 추가되면 제일 하단으로 포지션 이동
+        /*// 새로운 글이 추가되면 제일 하단으로 포지션 이동
         mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

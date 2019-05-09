@@ -141,24 +141,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View v) {
                 mEmail = mIdEditText.getText().toString().trim();
                 mPassword = mPasswordEditText.getText().toString().trim();
-
-                mAuth.signInWithEmailAndPassword(mEmail, mPassword)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                                    save(); //로그인 정보저장
-                                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                                    Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
-                                    mIdEditText.startAnimation(shake);
-                                    mPasswordEditText.startAnimation(shake);
+                if (mEmail.equals("") || mPassword.equals("")) {
+                    Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(mEmail, mPassword)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                                        save(); //로그인 정보저장
+                                        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                                        Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
+                                        mIdEditText.startAnimation(shake);
+                                        mPasswordEditText.startAnimation(shake);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
 

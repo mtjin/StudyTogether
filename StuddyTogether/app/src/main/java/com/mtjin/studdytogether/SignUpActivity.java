@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -65,6 +67,9 @@ public class SignUpActivity extends AppCompatActivity {
                             });
                 }else{
                     Toast.makeText(SignUpActivity.this, "패스워드가 서로 다릅니다.", Toast.LENGTH_SHORT).show();
+                    Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
+                    mPassConfirmEditText.startAnimation(shake);
+                    mPasswordEditText.startAnimation(shake);
                 }
             }
         });

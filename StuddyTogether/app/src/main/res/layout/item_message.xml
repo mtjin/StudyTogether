@@ -23,16 +23,10 @@
             android:padding="3dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="제목: "
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/message_tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textStyle="bold"
                 android:text="제목입니다."
                 android:textSize="20dp" />
         </LinearLayout>
@@ -50,7 +44,7 @@
                 android:layout_marginRight="3dp"
                 android:src="@drawable/profile"
                 app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp" />
+                app:civ_border_width="1dp" />
 
             <TextView
                 android:id="@+id/message_tv_name"
@@ -59,15 +53,14 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="공부의신"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textSize="14dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="| "
-                android:textSize="20dp"
+                android:textSize="14dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,14 +70,14 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="10대"
-                android:textSize="20dp" />
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="|  "
-                android:textSize="20dp"
+                android:textSize="14dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -93,7 +86,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="2019-04-30"
-                android:textSize="20dp" />
+                android:textSize="14dp" />
         </LinearLayout>
 
         <LinearLayout
