@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.mtjin.studdytogether.R;
 
-public class commentActivity extends AppCompatActivity {
+public class CommentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

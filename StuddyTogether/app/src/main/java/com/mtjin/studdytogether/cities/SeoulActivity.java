@@ -29,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.mtjin.studdytogether.MainActivity;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.WriteActivity;
+import com.mtjin.studdytogether.adapter.MessageAdapter;
 import com.mtjin.studdytogether.realtime_database.StudyMessage;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,32 +47,10 @@ public class SeoulActivity extends AppCompatActivity {
 
     private StudyMessage mStudyMessage; //글 아이템
 
-    private FirebaseRecyclerAdapter<StudyMessage, MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<StudyMessage, MessageAdapter.MessageViewHolder> mFirebaseAdapter;
 
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mSeoulDatabaseReference = mRootDatabaseReference.child("seoulStudy"); //profile이란 이름의 하위 데이터베이스
-
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView nickNameTextView;
-        TextView ageTextView;
-        ImageView messageImageView;
-        TextView messageTextView;
-        CircleImageView photoImageView;
-        TextView datesTextView;
-
-
-        public MessageViewHolder(@NonNull View itemView) {
-            super(itemView);
-            titleTextView = itemView.findViewById(R.id.message_tv_title);
-            nickNameTextView = itemView.findViewById(R.id.message_tv_name);
-            ageTextView = itemView.findViewById(R.id.message_tv_age);
-            messageImageView = itemView.findViewById(R.id.message_iv_photo); //업로드한사진
-            messageTextView = itemView.findViewById(R.id.message_tv_message);
-            photoImageView = itemView.findViewById(R.id.message_iv_profile); //내 프로필사진
-            datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
-        }
-    }
 
     private RecyclerView mMessageRecyclerView;
 
@@ -96,34 +75,7 @@ public class SeoulActivity extends AppCompatActivity {
                 .setQuery(query, StudyMessage.class)
                 .build();
 
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<StudyMessage, MessageViewHolder>(options) { //위에서정의한 옵션을 넣어줌줌
-            @Override
-            protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull StudyMessage model) { //홀더에 세팅만해주면됨 (modeld에 데이터가 다들어와있으니 그냥넣어주면됨)
-                holder.titleTextView.setText(model.getTitle());
-                holder.nickNameTextView.setText(model.getNickName());
-                holder.ageTextView.setText(model.getAge());
-                holder.messageTextView.setText(model.getContent());
-                if(model.getImage().equals("basic")) { //프로필사진이 없는경우
-                    Glide.with(SeoulActivity.this).load("https://firebasestorage.googleapis.com/v0/b/studdytogether.appspot.com/o/Basisc%2FbasicProfile.png?alt=media&token=dd0e0e17-a057-40a4-ae7f-364fa529e2a3").into(holder.photoImageView);
-                }else{
-                    Glide.with(SeoulActivity.this).load(model.getImage()).into(holder.photoImageView);
-                }
-               if(model.getPhoto() != "basic") {
-                   Glide.with(SeoulActivity.this).load(model.getPhoto()).into(holder.messageImageView);
-               }else{
-                   //사진첨부안했으니 안올림
-               }
-               holder.datesTextView.setText(model.getDates());
-            }
-
-            @NonNull
-            @Override //뷰홀더가 만들어지는 시점에 호출된다
-            public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_message, viewGroup, false); //우리가쓸려는 chatMessage아이템의 뷰객체 생성
-                return  new MessageViewHolder(view); //각각의 chatMessage아이템을 위한 뷰를 담고있는 뷰홀더객체를 반환한다.
-            }
-        };
+        mFirebaseAdapter = new MessageAdapter(options, getApplicationContext());
 
         //아래구분선 세팅
         mMessageRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -131,6 +83,8 @@ public class SeoulActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true); //레이아웃매니저 생성
         mMessageRecyclerView.setLayoutManager(layoutManager); ////만든 레이아웃매니저 객체를(설정을) 리사이클러 뷰에 설정해줌
         mMessageRecyclerView.setAdapter(mFirebaseAdapter); //어댑터 셋 ( 파이어베이스 어댑터는 액티비티 생명주기에 따라서 상태를 모니터링하게하고 멈추게하고 그런 코드를 작성하도록 되있다.==> 밑에 onStart()와 onStop에 구현해놨다)
+
+
 
         // 키보드 올라올 때 RecyclerView의 위치를 마지막 포지션으로 이동
         mMessageRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -211,6 +165,7 @@ public class SeoulActivity extends AppCompatActivity {
         super.onStop();
         mFirebaseAdapter.stopListening(); // FirebaseRecyclerAdapter 실시간 쿼리 중지
     }
+
 
 
 }
