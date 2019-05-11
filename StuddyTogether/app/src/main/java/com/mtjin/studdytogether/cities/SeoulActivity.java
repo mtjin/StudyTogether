@@ -1,41 +1,29 @@
 package com.mtjin.studdytogether.cities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.mtjin.studdytogether.MainActivity;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.WriteActivity;
 import com.mtjin.studdytogether.adapter.MessageAdapter;
 import com.mtjin.studdytogether.realtime_database.StudyMessage;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class SeoulActivity extends AppCompatActivity {
+public class SeoulActivity extends AppCompatActivity{
     static final String TAG = "SeoulActivityTAG";
     static final int WRITE = 100;
     //자신 프로필
@@ -47,7 +35,7 @@ public class SeoulActivity extends AppCompatActivity {
 
     private StudyMessage mStudyMessage; //글 아이템
 
-    private FirebaseRecyclerAdapter<StudyMessage, MessageAdapter.MessageViewHolder> mFirebaseAdapter;
+    private MessageAdapter mFirebaseAdapter;
 
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mSeoulDatabaseReference = mRootDatabaseReference.child("seoulStudy"); //profile이란 이름의 하위 데이터베이스
@@ -83,7 +71,6 @@ public class SeoulActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true); //레이아웃매니저 생성
         mMessageRecyclerView.setLayoutManager(layoutManager); ////만든 레이아웃매니저 객체를(설정을) 리사이클러 뷰에 설정해줌
         mMessageRecyclerView.setAdapter(mFirebaseAdapter); //어댑터 셋 ( 파이어베이스 어댑터는 액티비티 생명주기에 따라서 상태를 모니터링하게하고 멈추게하고 그런 코드를 작성하도록 되있다.==> 밑에 onStart()와 onStop에 구현해놨다)
-
 
 
         // 키보드 올라올 때 RecyclerView의 위치를 마지막 포지션으로 이동

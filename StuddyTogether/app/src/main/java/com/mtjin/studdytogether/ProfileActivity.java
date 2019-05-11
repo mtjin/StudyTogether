@@ -105,8 +105,9 @@ public class ProfileActivity extends AppCompatActivity {
     DatabaseReference mNickNameDatabaseReference = mRootDatabaseReference.child("nickNameList"); //닉네임 담아놀 하위 데이터베이스
     FirebaseFirestore db; //파이어스토어 디비
     String tmpNickName; //중복확인용 임시닉네임
+    String removeNickName; //등록시 기존 자기 아이디 닉네임리스트에서 지우기 위한 임시저장용도
+    Boolean isHasRemovedNickName; //지울 닉네임이 존재하는지
     Boolean isNickExisted1;
-    Boolean isNickExisted2;
     Boolean isCheckid;
 
     @Override
@@ -200,9 +201,10 @@ public class ProfileActivity extends AppCompatActivity {
         mProfileRef = mStorageRef.child("profileImage").child(mUid); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
 
         //초기화
-        isCheckid = false;
         isNickExisted1 = false;
-        isNickExisted2 = false;
+        isHasRemovedNickName = false;
+        isCheckid = true;
+        isHasRemovedNickName = null;
 
         mCheckidButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,16 +214,49 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("DDDD", "IN mCheckidButton");
+                    //초기화
+                    isNickExisted1 = false;
+                    isHasRemovedNickName = false;
                     isCheckid = true;
-                    mNickNameDatabaseReference.addValueEventListener(new ValueEventListener() {
+                    isHasRemovedNickName = null;
+                    mRootDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(tmpNickName)) { //중복닉네임
-                                // Toast.makeText(getApplicationContext(), "중복 닉네임이 이미 있습니다.", Toast.LENGTH_LONG).show();
-                                isNickExisted1 = true;
-                            } else { //사용가능닉네임
+                            if(dataSnapshot.hasChild("nickNameList") || dataSnapshot.child("nickNameList").hasChild(tmpNickName)) {
+                                if (!dataSnapshot.child("nickNameList").hasChild(tmpNickName) || dataSnapshot.child("nickNameList").child(tmpNickName).getValue().equals(mEmail)) { //사용가능닉네임
+                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "1");
+                                    if ( dataSnapshot.child("nickNameList").hasChild(tmpNickName) && !dataSnapshot.child("nickNameList").child(tmpNickName).getValue().equals(mEmail)) { //원래랑 같은 닉네임 (지울필요 X)
+                                        isHasRemovedNickName = false;
+                                        Log.d(TAG, "2");
+                                    } else if(dataSnapshot.child("nickNameList").hasChild(tmpNickName)){ //원래랑 다른닉네임 원래닉네임은 지워줘야함
+                                        //removeNickName = (String) dataSnapshot.child(tmpNickName).getValue(); //지워야할닉네임
+
+                                        removeNickName = (String) dataSnapshot.child("profile").child(mUid).child("nickName").getValue(); //기존에 갖고있던 닉네임( nickNameList에서 지워줘야함)
+                                        isHasRemovedNickName = true; //지울닉네임 존재 (기존닉네임
+                                        Log.d(TAG, "3");
+                                    }else { //처음 닉네임 짓는경우
+                                        if ( dataSnapshot.hasChild("profile") && dataSnapshot.child("profile").hasChild(mUid)){
+                                            isHasRemovedNickName = true;
+                                            removeNickName = (String) dataSnapshot.child("profile").child(mUid).child("nickName").getValue(); //기존에 갖고있던 닉네임( nickNameList에서 지워줘야함)
+                                            Log.d(TAG, "4");
+                                        }else {
+                                            isHasRemovedNickName = false;
+                                            Log.d(TAG, "5");
+                                        }
+                                    }
+                                    isNickExisted1 = false;
+                                } else { //중복된 닉네임 사용불가
+                                    Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
+                                    isNickExisted1 = true;
+                                    isHasRemovedNickName = false;
+                                    Log.d(TAG, "6");
+                                }
+                            }else{
                                 Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
                                 isNickExisted1 = false;
+                                isHasRemovedNickName = false;
+                                Log.d(TAG, "7");
                             }
                         }
 
@@ -230,47 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_LONG).show();
                         }
                     });
-                    mProfieDatabaseReference.child(mUid).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild("nickName")) {
-                                if (dataSnapshot.getValue().equals(tmpNickName)) {
-                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
-                                    isNickExisted2 = true;
-                                } else {
-                                    if (isNickExisted1) {
-                                        if (getOriginalNickName().equals(tmpNickName)) {
-                                            Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
-                                            ;
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
-                                    }
-                                    isNickExisted2 = false;
-                                }
-                            } else {
-                                if (isNickExisted1) {
-                                    if (getOriginalNickName().equals(tmpNickName)) {
-                                        Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
-                                        ;
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "중복된 닉네임이 존재합니다.", Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
-                                    ;
-                                }
-                                isNickExisted2 = false;
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
             }
         });
@@ -280,10 +275,13 @@ public class ProfileActivity extends AppCompatActivity {
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("profilelogin", isCheckid+"");
+                Log.d("profilelogin1", isNickExisted1+"");
+                Log.d("profilelogin3", mUid);
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
 
-                if (getOriginalNickName().equals(mNickName) || isCheckid && mNickName.equals(tmpNickName) && (!isNickExisted1 || isNickExisted2)) {
+                if (isCheckid && mNickName.equals(tmpNickName) && (!isNickExisted1)) { //닉네임 생성할 수 있는 조건
                     if (mNickName.length() > 7 || mNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(mNickName))) { //닉네임 1자 이하 5자 이상으로 한 경우, 또는 특수문자
                         Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                     } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
@@ -312,15 +310,15 @@ public class ProfileActivity extends AppCompatActivity {
                                         mDownloadImageUri = task.getResult();
                                         Log.d(TAG + "DOWN", mDownloadImageUri + "");
                                         //디비에넣기전 이전 아이디는 디비에서삭제
-                                        if (!getOriginalNickName().equals(mNickName)) {
-                                            mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
+                                        if (isHasRemovedNickName) {
+                                            mNickNameDatabaseReference.child(removeNickName).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                                         }
                                         //값 데이터베이스에서 넣어줌
                                         profile = new Profile(mEmail, mNickName, mSex, mAge, mDownloadImageUri + "");
                                         //사용자토큰을 루트로 사용자 정보 저장
                                         mProfieDatabaseReference.child(mUid).setValue(profile);
                                         //닉네임리스트에 닉네임저장
-                                        mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                                        mNickNameDatabaseReference.child(profile.getNickName()).setValue(mEmail);
                                         //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                                         saveProfileSharedPreferences(profile);
                                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
@@ -334,15 +332,15 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             });
                         } else if (mTmpDownloadImageUri != null) { //과거세팅값으로 한 경우
-                            if (!getOriginalNickName().equals(mNickName)) {
-                                mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
+                            if (isHasRemovedNickName) {
+                                mNickNameDatabaseReference.child(removeNickName).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                             }
                             //값 데이터베이스에서 넣어줌
                             profile = new Profile(mEmail, mNickName, mSex, mAge, mTmpDownloadImageUri + "");
                             //사용자토큰을 루트로 사용자 정보 저장
                             mProfieDatabaseReference.child(mUid).setValue(profile);
                             //닉네임리스트에 닉네임저장
-                            mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                            mNickNameDatabaseReference.child(profile.getNickName()).setValue(mEmail);
                             //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                             saveProfileSharedPreferences(profile);
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
@@ -352,15 +350,15 @@ public class ProfileActivity extends AppCompatActivity {
                         } else { //프로필이미지 기본으로할경우
                             Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                             //디비에넣기전 이전 아이디는 디비에서삭제
-                            if (!getOriginalNickName().equals(mNickName)) {
-                                mNickNameDatabaseReference.child(getOriginalNickName()).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
+                            if (isHasRemovedNickName) {
+                                mNickNameDatabaseReference.child(removeNickName).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
                             }
                             //값 데이터베이스에서 넣어줌
                             profile = new Profile(mEmail, mNickName, mSex, mAge, "basic");
                             //사용자토큰을 루트로 사용자 정보 저장
                             mProfieDatabaseReference.child(mUid).setValue(profile);
                             //닉네임리스트에 닉네임저장
-                            mNickNameDatabaseReference.child(profile.getNickName()).setValue("true");
+                            mNickNameDatabaseReference.child(profile.getNickName()).setValue(mEmail);
                             //SharedPReference에도 저장해줌 (쉽게 갖다쓰기위해)
                             saveProfileSharedPreferences(profile);
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);

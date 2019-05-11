@@ -7,16 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.cities.SeoulActivity;
 import com.mtjin.studdytogether.comments.CommentActivity;
 import com.mtjin.studdytogether.realtime_database.StudyMessage;
 
@@ -24,6 +21,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends FirebaseRecyclerAdapter<StudyMessage, MessageAdapter.MessageViewHolder> {
     Context context;
+    interface OnItemClickListener{
+        void onClick();
+    }
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.mOnItemClickListener = listener;
+    }
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -66,7 +72,7 @@ public class MessageAdapter extends FirebaseRecyclerAdapter<StudyMessage, Messag
     }
 
     //뷰들을 바인딩 해줍니다.
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
+    public class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView nickNameTextView;
         TextView ageTextView;
@@ -86,15 +92,17 @@ public class MessageAdapter extends FirebaseRecyclerAdapter<StudyMessage, Messag
             photoImageView = itemView.findViewById(R.id.message_iv_profile); //내 프로필사진
             datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
             commentTextView = itemView.findViewById(R.id.message_tv_comment); //댓글부분 (클릭시 댓글창으로 이동)
+
             commentTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "ADASDd", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(v.getContext(), CommentActivity.class);
-
+                    Intent intent = new Intent(context, CommentActivity.class);
+                    context.startActivity(intent);
                 }
             });
         }
+
+
 
     }
 }
