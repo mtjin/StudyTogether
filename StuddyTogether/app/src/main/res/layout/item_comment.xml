@@ -3,22 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:padding="3dp"
-    >
+    android:padding="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView  xmlns:app="http://schemas.android.com/apk/res-auto"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/comment_iv_profile"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_gravity="top"
             android:src="@drawable/profile"
             app:civ_border_color="#FF000000"
-            android:layout_gravity="top"
-            app:civ_border_width="1dp"/>
+            app:civ_border_width="1dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,23 +26,58 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/comment_tv_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="유저 이름"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"
-                android:textSize="15dp" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:id="@+id/comment_tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="유저 이름"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="|"
+                    android:layout_marginRight="5dp"/>
+
+                <TextView
+                    android:id="@+id/comment_tv_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:text="10대"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="|"
+                    android:layout_marginRight="5dp"/>
+
+                <TextView
+                    android:id="@+id/comment_tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="2019-04-30 12:30"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/comment_tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_gray_text"
+                android:maxLength="150"
+                android:maxLines="10"
+                android:padding="5dp"
                 android:text="메세지 내용"
-                android:textSize="15dp"
-                android:padding="5dp"/>
+                android:textSize="15dp" />
 
         </LinearLayout>
     </LinearLayout>

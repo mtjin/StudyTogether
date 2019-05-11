@@ -12,7 +12,7 @@ public class Profile {
         this.nickName = nickName;
         this.sex = sex;
         this.age = age;
-        if(image == null) { //만약 이미지를 설정하면 basic이란 문자열을 갖게한다.
+        if(image == null || image.equals("")) { //만약 이미지를 설정하면 basic이란 문자열을 갖게한다.
          this.image = "basic";
         }else {
             this.image = image;

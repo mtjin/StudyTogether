@@ -8,6 +8,8 @@ public class StudyMessage {
     private String photo; // 포스팅하는 사진
     private String age; //나이
     private String dates; //글쓴날짜
+    private String id; //푸쉬값
+    private String city; //작성도시
 
     public StudyMessage() {
 
@@ -21,6 +23,14 @@ public class StudyMessage {
         this.photo = photo;
         this.age = age;
         this.dates = dates;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -79,6 +89,13 @@ public class StudyMessage {
         this.dates = dates;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 }
 
 

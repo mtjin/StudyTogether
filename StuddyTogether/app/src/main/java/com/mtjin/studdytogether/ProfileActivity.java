@@ -85,8 +85,6 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리
-    private Boolean isSavedLogData; //프로필 저장되있는게 있는지
-    private SharedPreferences mAppData; //프로필 자동불러오기용
 
     //RequestCode
     final static int PICK_IMAGE = 1; //갤러리에서 사진선택
@@ -374,12 +372,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    public String getOriginalNickName() {
-        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
-        return pref.getString("nickName", "");
     }
 
 

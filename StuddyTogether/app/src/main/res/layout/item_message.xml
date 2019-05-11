@@ -85,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="2019-04-30"
+                android:text="2019-04-30 12:30"
                 android:textSize="14dp" />
         </LinearLayout>
 
@@ -103,7 +103,9 @@
                 android:padding="3dp"
                 android:text="이 스터디는 프로그래밍을 공부하기위한 스터디입니다
 프로그래밍언어는 자바를 주로 다룰 것이며 자바를 끝낸 후 안드로이드를 공부하고 팀프로젝트도 할 예정입니다. 많은참여바랍니다!!"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:maxLength="1000"
+                android:maxLines="20"/>
         </LinearLayout>
 
         <LinearLayout
