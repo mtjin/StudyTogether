@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.comments;
+package com.mtjin.studdytogether.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CommentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class CommentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView mCommentsRecyclerView;
     private EditText mWriteEditText;
@@ -42,7 +42,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     private String mTmpDownloadImageUri;
     private String mAge;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
     //어댑터 , 아이템리스트
     private CommentAdapter mCommentAdapter;
     private ArrayList<Comment> mCommentList;
@@ -62,7 +62,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
 
         loadShared(); //쉐어드 데이터가져오기
         processIntent(); //인텐트 처리
-         mCityDatabaseReference = mRootDatabaseReference.child(mCity).child(mId).child(mId+"Comment"); //해당지역의 게시글의 데이터베이스 참조
+        mCityDatabaseReference = mRootDatabaseReference.child(mCity).child(mId).child(mId + "Comment"); //해당지역의 게시글의 데이터베이스 참조
 
 
         mCommentsRecyclerView = findViewById(R.id.comments_rev_comments);
@@ -86,14 +86,14 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
         mCityDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               // if (dataSnapshot.hasChild(mId+"Comment")) {
-                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+                // if (dataSnapshot.hasChild(mId+"Comment")) {
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
 
-                        Comment comment = dataSnapshot2.getValue(Comment.class);
-                        mCommentList.add(comment);
-                        mCommentAdapter.notifyItemInserted(mCommentList.size() - 1);
-                    }
-             //   }
+                    Comment comment = dataSnapshot2.getValue(Comment.class);
+                    mCommentList.add(comment);
+                    mCommentAdapter.notifyItemInserted(mCommentList.size() - 1);
+                }
+                //   }
             }
 
             @Override
@@ -111,11 +111,11 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
 
     }
 
-    public void writeComment(){
+    public void writeComment() {
         String message = mWriteEditText.getText().toString();
-        if(message.equals("")){ //빈칸인경우
+        if (message.equals("")) { //빈칸인경우
             Toast.makeText(getApplicationContext(), "한글자 이상은 작성해야합니다.", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Calendar time = Calendar.getInstance();
             String dates = format1.format(time.getTime()); //작성시간
             mComment = new Comment(mNickName, mAge, mTmpDownloadImageUri, dates, message);
@@ -128,14 +128,14 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
             mCityDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                  //  if (dataSnapshot.hasChild(mId+"Comment")) {
-                        for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+                    //  if (dataSnapshot.hasChild(mId+"Comment")) {
+                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
 
-                            Comment comment = dataSnapshot2.getValue(Comment.class);
-                            mCommentList.add(comment);
-                        }
-                        mCommentAdapter.notifyDataSetChanged();
-                //    }
+                        Comment comment = dataSnapshot2.getValue(Comment.class);
+                        mCommentList.add(comment);
+                    }
+                    mCommentAdapter.notifyDataSetChanged();
+                    //    }
                 }
 
                 @Override
@@ -148,15 +148,15 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     //인텐트처리
-    public void processIntent(){
+    public void processIntent() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Log.d("TEST22", bundle.getString("id", ""));
-        Log.d("TEST22", bundle.getString("city","") );
-        if(bundle.getString("id") != null) {
+        Log.d("TEST22", bundle.getString("city", ""));
+        if (bundle.getString("id") != null) {
             mId = bundle.getString("id");
         }
-        if(bundle.getString("city") != null){
+        if (bundle.getString("city") != null) {
             mCity = bundle.getString("city");
         }
     }
@@ -179,16 +179,16 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
         mCityDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               // if (dataSnapshot.hasChild(mId+"Comment")) {
-                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+                // if (dataSnapshot.hasChild(mId+"Comment")) {
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
 
-                        Comment comment = dataSnapshot2.getValue(Comment.class);
-                        mCommentList.add(comment);
-                    }
-                    mCommentAdapter.notifyDataSetChanged();
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    Comment comment = dataSnapshot2.getValue(Comment.class);
+                    mCommentList.add(comment);
                 }
-          //  }
+                mCommentAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+            //  }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

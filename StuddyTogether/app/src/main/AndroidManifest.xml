@@ -18,8 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".cities_view.DetailCityActivity"></activity>
-        <activity android:name=".comments.CommentActivity" />
+        <activity android:name=".view.PhotoZoomActivity"></activity>
+        <activity android:name=".cities_view.DetailCityActivity" />
+        <activity android:name=".view.CommentActivity" />
         <activity android:name=".view.WriteActivity" />
         <activity android:name=".cities_view.SeoulActivity" />
         <activity android:name=".view.MainActivity" />

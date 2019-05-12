@@ -49,5 +49,7 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     //페이스북로그인
     implementation 'com.facebook.android:facebook-login:[4,5)'
+    //사진줌인아웃
+    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
 }
 apply plugin: 'com.google.gms.google-services'

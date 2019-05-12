@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.comments.CommentActivity;
+import com.mtjin.studdytogether.cities_view.DetailCityActivity;
+import com.mtjin.studdytogether.view.CommentActivity;
 import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         } else {
             Glide.with(context).load(model.getImage()).into(holder.photoImageView);
         }
-        if (model.getPhoto() != "basic") {
+        if (model.getPhoto() != "basic") { //분명 게시글사진을 업로드안하면 basic이란 이름으로 model에 저장되서 !model.getPhoto().equals("basic") 로 비교했는데 계속 사진이안떠야하는데 기본사진이뜬다.지금한건 이상한거같지만 잘되서 이부분은 이러한 조건문으로 했다.
             Glide.with(context).load(model.getPhoto()).into(holder.messageImageView);
         } else {
             //사진첨부안했으니 안올림
@@ -90,6 +91,49 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 bundle.putString("city", model.getCity());
                 Log.d("TEST11", model.getId());
                 Log.d("TEST11", model.getCity());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
+
+        //게시물 자세히보기 (내용물눌럿을때)
+        holder.messageTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailCityActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", model.getId());
+                bundle.putString("city", model.getCity());
+                bundle.putString("messageTitle", model.getTitle());
+                bundle.putString("messageDate", model.getDates());
+                bundle.putString("messageNIckName", model.getNickName());
+                bundle.putString("messageAge", model.getAge());
+                bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
+                bundle.putString("messageImage", model.getImage()); //내 프로필사진
+                bundle.putString("messageContent", model.getContent()); //내용
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+
+            }
+        });
+
+        //게시물 자세히보기 (업로드한사진눌럿을때 위와동일코드)
+        holder.messageImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailCityActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", model.getId());
+                bundle.putString("city", model.getCity());
+                bundle.putString("messageTitle", model.getTitle());
+                bundle.putString("messageDate", model.getDates());
+                bundle.putString("messageNIckName", model.getNickName());
+                bundle.putString("messageAge", model.getAge());
+                bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
+                bundle.putString("messageImage", model.getImage()); //내 프로필사진
+                bundle.putString("messageContent", model.getContent()); //내용
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
