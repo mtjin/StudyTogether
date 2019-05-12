@@ -70,8 +70,6 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
-
-
         mMessageList = new ArrayList<>();
         mMessageAdapter = new MessageAdapter(mMessageList, getApplicationContext());
 
