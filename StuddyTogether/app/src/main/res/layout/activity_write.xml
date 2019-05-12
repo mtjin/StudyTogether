@@ -55,6 +55,7 @@
         android:gravity="top"
         android:hint="스터디 내용을 작성해주세요.(1000자 이내)"
         android:maxLength="1000"
+        android:maxLines="30"
         android:padding="10dp"
         android:privateImeOptions="defaultInputmode=korean"
         android:textCursorDrawable="@color/colorPrimaryDark"

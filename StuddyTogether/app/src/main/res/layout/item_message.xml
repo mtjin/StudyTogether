@@ -105,7 +105,7 @@
 프로그래밍언어는 자바를 주로 다룰 것이며 자바를 끝낸 후 안드로이드를 공부하고 팀프로젝트도 할 예정입니다. 많은참여바랍니다!!"
                 android:textSize="15dp"
                 android:maxLength="1000"
-                android:maxLines="20"/>
+                android:maxLines="6"/>
         </LinearLayout>
 
         <LinearLayout
@@ -118,7 +118,7 @@
             <ImageView
                 android:id="@+id/message_iv_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:layout_marginBottom="10dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/gallery"
@@ -133,6 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="right"
             android:text="댓글"
             android:textSize="20dp" />
