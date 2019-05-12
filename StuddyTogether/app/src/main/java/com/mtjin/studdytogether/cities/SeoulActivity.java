@@ -214,4 +214,9 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

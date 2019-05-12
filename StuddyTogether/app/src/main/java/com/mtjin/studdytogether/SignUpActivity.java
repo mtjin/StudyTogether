@@ -49,7 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
                 mPassword = mPasswordEditText.getText().toString().trim();
                 mPassConfirm = mPassConfirmEditText.getText().toString().trim();
 
-                if(mPassword.equals(mPassConfirm)) {
+                if (mPassword.equals(mPassConfirm)) {
 
                     mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
@@ -58,14 +58,15 @@ public class SignUpActivity extends AppCompatActivity {
 
                                     if (task.isSuccessful()) {
                                         Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
                                     } else {
-                                        Toast.makeText(SignUpActivity.this, "등록 에러", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SignUpActivity.this, "이미 있는 아이디거나 비밀번호에는 특수문자가 포함되어야합니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                }else{
+                } else {
                     Toast.makeText(SignUpActivity.this, "패스워드가 서로 다릅니다.", Toast.LENGTH_SHORT).show();
                     Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
                     mPassConfirmEditText.startAnimation(shake);
@@ -80,7 +81,5 @@ public class SignUpActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 }

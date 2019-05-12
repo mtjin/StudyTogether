@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mtjin.studdytogether.function.BackPressedFunction;
 import com.mtjin.studdytogether.realtime_database.Profile;
 import com.mtjin.studdytogether.realtime_database.StudyMessage;
 
@@ -57,7 +58,8 @@ public class WriteActivity extends AppCompatActivity {
 
     //프로그래스 로딩 다이얼로그
      ProgressDialog progressDialog;
-
+     //2번뒤로가기 클릭시 종료
+     private BackPressedFunction mBackPressedFunction;
     //RequestCode
     final static int PICK_IMAGE = 1;
     //값들
@@ -263,5 +265,11 @@ public class WriteActivity extends AppCompatActivity {
                         progressDialog.show();
                     }
                 }, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mBackPressedFunction.onBackPressed();
+
     }
 }

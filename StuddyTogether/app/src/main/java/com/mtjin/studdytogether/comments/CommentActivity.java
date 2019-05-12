@@ -76,7 +76,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
         //아래구분선 세팅
         mCommentsRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         // 리사이클러뷰에 레이아웃 매니저와 어댑터를 설정한다.
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true); //레이아웃매니저 생성
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false); //레이아웃매니저 생성
         mCommentsRecyclerView.setLayoutManager(layoutManager); ////만든 레이아웃매니저 객체를(설정을) 리사이클러 뷰에 설정해줌
         mCommentsRecyclerView.setAdapter(mCommentAdapter); //어댑터 셋
 

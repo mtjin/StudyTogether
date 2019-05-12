@@ -90,6 +90,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 bundle.putString("city", model.getCity());
                 Log.d("TEST11", model.getId());
                 Log.d("TEST11", model.getCity());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
