@@ -6,8 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!--GPS-->
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- GPS -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -19,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".cities_view.DetailCityActivity"></activity>
         <activity android:name=".comments.CommentActivity" />
         <activity android:name=".view.WriteActivity" />
         <activity android:name=".cities_view.SeoulActivity" />
@@ -60,8 +60,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>

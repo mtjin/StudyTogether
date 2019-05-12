@@ -195,7 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
         //초기화
         isNickExisted1 = false;
         isHasRemovedNickName = false;
-        isCheckid = true;
+        isCheckid = false;
         isHasRemovedNickName = null;
 
         mCheckidButton.setOnClickListener(new View.OnClickListener() {

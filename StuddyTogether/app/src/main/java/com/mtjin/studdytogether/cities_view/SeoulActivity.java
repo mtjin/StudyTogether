@@ -11,7 +11,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +48,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mSeoulDatabaseReference = mRootDatabaseReference.child("seoulStudy"); //profile이란 이름의 하위 데이터베이스
 
+    private EditText mSearchEditText; //검색텍스트
     private RecyclerView mMessageRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArrayList<StudyMessage> mMessageList;
@@ -53,6 +59,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
         setContentView(R.layout.activity_seoul);
         setTitle("서울지역");
 
+        mSearchEditText = findViewById(R.id.seoul_et_search); //검색
         mMessageRecyclerView = findViewById(R.id.seoul_rev_message); //채팅메세지들 리사이클러뷰
 
         findViewById(R.id.seoul_tv_write).setOnClickListener(new View.OnClickListener() {
@@ -62,6 +69,22 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                 startActivityForResult(intent, WRITE);
             }
         });
+
+        mSearchEditText.setImeOptions(EditorInfo.IME_ACTION_DONE); // 키보드 확인 버튼 클릭시
+        mSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) { //처리할 일
+                    if(mSearchEditText.getText().toString().trim().length() >=2) {
+                        searchPost(mSearchEditText.getText().toString().trim());
+                        return true;
+                    }
+                }
+                Toast.makeText(getApplicationContext(), "두글자 이상입력해야합니다", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
 
         //리사이클러뷰 끝까지 끌어당기면 새로고침하게 해주는 뷰 onRefresh()에 해당코드 구현
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.seoul_swipe_layout);
@@ -134,6 +157,35 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                 }
             }
         });*/
+    }
+
+    //검색기능
+    public void searchPost(final String searchText) {
+        mMessageAdapter.clear();
+        mSeoulDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+
+                    StudyMessage studyMessage = dataSnapshot2.getValue(StudyMessage.class);
+                    String id = dataSnapshot2.getKey();
+                    studyMessage.setId(id);
+                    studyMessage.setCity("seoulStudy");
+                    //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색)
+                    if(studyMessage.getTitle().contains(searchText) || studyMessage.getContent().contains(searchText)) {
+                        mMessageList.add(studyMessage);
+                    }
+                }
+                mMessageAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
