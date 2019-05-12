@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.cities;
+package com.mtjin.studdytogether.cities_view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,19 +13,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.WriteActivity;
+import com.mtjin.studdytogether.view.WriteActivity;
 import com.mtjin.studdytogether.adapter.MessageAdapter;
-import com.mtjin.studdytogether.realtime_database.StudyMessage;
+import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -77,6 +75,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
         mMessageRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         // 리사이클러뷰에 레이아웃 매니저와 어댑터를 설정한다.
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true); //레이아웃매니저 생성
+        layoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(layoutManager); ////만든 레이아웃매니저 객체를(설정을) 리사이클러 뷰에 설정해줌
         mMessageRecyclerView.setAdapter(mMessageAdapter); //어댑터 셋 ( 파이어베이스 어댑터는 액티비티 생명주기에 따라서 상태를 모니터링하게하고 멈추게하고 그런 코드를 작성하도록 되있다.==> 밑에 onStart()와 onStop에 구현해놨다)
 
@@ -153,8 +152,6 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                 //리사이클러뷰에 쓴 글 추가
                 mSeoulDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.
                         .setValue(mStudyMessage); //DB에 데이터넣음
-
-
             }
         }
     }

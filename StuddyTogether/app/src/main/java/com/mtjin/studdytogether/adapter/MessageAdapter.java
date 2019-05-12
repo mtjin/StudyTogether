@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.comments.CommentActivity;
-import com.mtjin.studdytogether.realtime_database.StudyMessage;
+import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.function;
 
 import android.util.Log;
 

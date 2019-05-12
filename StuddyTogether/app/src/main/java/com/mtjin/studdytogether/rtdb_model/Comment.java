@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.realtime_database;
+package com.mtjin.studdytogether.rtdb_model;
 
 public class Comment {
     private String nickName;

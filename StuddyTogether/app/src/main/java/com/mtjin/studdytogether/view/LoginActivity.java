@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +39,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.mtjin.studdytogether.R;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener { //GoogleApiClient.OnConnectionFailedListener, View.OnClickListener 구현

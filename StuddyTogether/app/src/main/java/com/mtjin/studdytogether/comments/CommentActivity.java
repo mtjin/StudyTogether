@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,8 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.adapter.CommentAdapter;
-import com.mtjin.studdytogether.realtime_database.Comment;
-import com.mtjin.studdytogether.realtime_database.StudyMessage;
+import com.mtjin.studdytogether.rtdb_model.Comment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

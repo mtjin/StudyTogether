@@ -2,23 +2,16 @@ package com.mtjin.studdytogether.adapter;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.comments.CommentActivity;
-import com.mtjin.studdytogether.realtime_database.Comment;
-import com.mtjin.studdytogether.realtime_database.StudyMessage;
+import com.mtjin.studdytogether.rtdb_model.Comment;
 
 import java.util.ArrayList;
 

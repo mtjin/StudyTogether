@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.view;
 
 import android.content.Intent;
 import android.os.Bundle;

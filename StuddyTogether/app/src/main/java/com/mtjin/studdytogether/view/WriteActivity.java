@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.view;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -6,32 +6,27 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.function.BackPressedFunction;
-import com.mtjin.studdytogether.realtime_database.Profile;
-import com.mtjin.studdytogether.realtime_database.StudyMessage;
+import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -43,8 +38,6 @@ public class WriteActivity extends AppCompatActivity {
     Button cancelButton;
     EditText titleEditText;
     EditText contentsEditText;
-    TextView addPhotoButton;
-    TextView deletePhotoButton;
     ImageView photoImageView;
 
     private StudyMessage studyMessage;
@@ -80,10 +73,7 @@ public class WriteActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.write_btn_cancel);
         titleEditText = findViewById(R.id.write_et_title);
         contentsEditText = findViewById(R.id.write_et_contents);
-        addPhotoButton = findViewById(R.id.write_tv_addphoto);
-        deletePhotoButton = findViewById(R.id.write_tv_deletephoto);
         photoImageView = findViewById(R.id.write_iv_photo);
-
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,27 +87,14 @@ public class WriteActivity extends AppCompatActivity {
                 showMessge();
             }
         });
-
-        //사진추가
-        addPhotoButton.setOnClickListener(new View.OnClickListener() {
+        photoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE);
+                photoDialogRadio();
             }
         });
 
-        //사진삭제
-        deletePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                photoImageView.setImageBitmap(null);
-                img = null;
-            }
-        });
-
+        mBackPressedFunction = new BackPressedFunction(this); //뒤로가기 2번시 종료 핸들러
     }
 
     @Override //갤러리에서 이미지 불러온 후 행동
@@ -270,6 +247,31 @@ public class WriteActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         mBackPressedFunction.onBackPressed();
+    }
 
+    //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
+    private void photoDialogRadio() {
+        final CharSequence[] PhotoModels = {"갤러리에서 가져오기", "지도에서 장소캡쳐", "사진 삭제"};
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setTitle("사진 업로드");
+        alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(WriteActivity.this, PhotoModels[item] + "가 선택되었습니다.", Toast.LENGTH_SHORT).show();
+                if (item == 0) { //갤러리
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, PICK_IMAGE);
+                } else if (item == 1) { //네이버지도
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.map.naver.com/"));
+                    startActivity(intent);
+                } else { //사진 삭제
+                    photoImageView.setImageBitmap(null);
+                    img = null;
+                }
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
 }
