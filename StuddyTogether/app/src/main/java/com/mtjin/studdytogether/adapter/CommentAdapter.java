@@ -2,6 +2,7 @@ package com.mtjin.studdytogether.adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.rtdb_model.Comment;
+import com.mtjin.studdytogether.view.PhotoZoomActivity;
 
 import java.util.ArrayList;
 
@@ -67,6 +69,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         } else {
             Glide.with(context).load(model.getImage()).into(holder.profileCircleImageView);
         }
+
+        holder.profileCircleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context , PhotoZoomActivity.class);
+                intent.putExtra("zoomProfilePhoto", model.getImage());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
