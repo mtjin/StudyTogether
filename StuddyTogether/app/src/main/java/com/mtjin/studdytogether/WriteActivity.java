@@ -48,7 +48,7 @@ public class WriteActivity extends AppCompatActivity {
     ImageView photoImageView;
 
     private StudyMessage studyMessage;
-    private  Bitmap img; //비트맵 업로드사진
+    private Bitmap img; //비트맵 업로드사진
     private Uri mDownloadImageUri; //업로드사진 스토리지 URI
     private String mUid; //사용자 토큰 고유 아이디
     private FirebaseAuth mFirebaseAuth; //인증객체
@@ -57,15 +57,15 @@ public class WriteActivity extends AppCompatActivity {
     private StorageReference mMessageImageRef; //게시물이미지 담을 파베 스토리지
 
     //프로그래스 로딩 다이얼로그
-     ProgressDialog progressDialog;
-     //2번뒤로가기 클릭시 종료
-     private BackPressedFunction mBackPressedFunction;
+    ProgressDialog progressDialog;
+    //2번뒤로가기 클릭시 종료
+    private BackPressedFunction mBackPressedFunction;
     //RequestCode
     final static int PICK_IMAGE = 1;
     //값들
     private String mImage;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,9 +144,9 @@ public class WriteActivity extends AppCompatActivity {
     private void saveButtonClick() {
         final String title = titleEditText.getText().toString();
         final String contents = contentsEditText.getText().toString();
-        if(title !=null && contents !=null){
+        if (title != null && contents != null) {
             loading(); //로딩 다이얼로그
-            if(img != null){
+            if (img != null) {
                 //파이어베이스 스토리지에 업로드
                 Toast.makeText(WriteActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -173,7 +173,7 @@ public class WriteActivity extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString("title", title);
                             bundle.putString("contents", contents);
-                            bundle.putString("donwnloadImageUri", mDownloadImageUri+"");
+                            bundle.putString("donwnloadImageUri", mDownloadImageUri + "");
                             //작성시간 put
                             Calendar time = Calendar.getInstance();
                             String dates = format1.format(time.getTime());
@@ -188,7 +188,7 @@ public class WriteActivity extends AppCompatActivity {
                         }
                     }
                 });
-            }else{ //저장한 이미지 없는 경우
+            } else { //저장한 이미지 없는 경우
                 //값 데이터베이스에서 넣어줌
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
@@ -203,13 +203,13 @@ public class WriteActivity extends AppCompatActivity {
                 setResult(RESULT_OK, intent);
                 finish();
             }
-        }else{
+        } else {
             Toast.makeText(this, "공백을 채워주세요", Toast.LENGTH_SHORT).show();
         }
-        
+
     }
 
-    public void showMessge(){
+    public void showMessge() {
 
         //다이얼로그 객체 생성
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -251,11 +251,11 @@ public class WriteActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
-        mMessageImageRef = mStorageRef.child(mUid+"messageImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
-       // Log.d("PROFILE22", mEmail);
+        mMessageImageRef = mStorageRef.child(mUid + "messageImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
+        // Log.d("PROFILE22", mEmail);
     }
 
-    public void loading(){
+    public void loading() {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
