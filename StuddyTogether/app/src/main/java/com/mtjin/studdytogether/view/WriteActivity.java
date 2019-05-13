@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -117,16 +116,16 @@ public class WriteActivity extends AppCompatActivity {
         }
     }
 
-    private void saveButtonClick() {
+    public void saveButtonClick() {
         final String title = titleEditText.getText().toString();
         final String contents = contentsEditText.getText().toString();
-        if (title != null && contents != null) {
+        if (!title.equals("") && !contents.equals("")) {
             if (img != null) {
                 loading(); //로딩 다이얼로그
                 //파이어베이스 스토리지에 업로드
                 Toast.makeText(WriteActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                img.compress(Bitmap.CompressFormat.JPEG, 30, baos);
                 byte[] datas = baos.toByteArray();
                 UploadTask uploadTask = mMessageImageRef.putBytes(datas);
                 Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -135,7 +134,6 @@ public class WriteActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             throw task.getException();
                         }
-
                         // Continue with the task to get the download URL
                         return mMessageImageRef.getDownloadUrl();
                     }
@@ -252,7 +250,7 @@ public class WriteActivity extends AppCompatActivity {
     }
 
     //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
-    private void photoDialogRadio() {
+    public void photoDialogRadio() {
         final CharSequence[] PhotoModels = {"갤러리에서 가져오기", "지도에서 장소캡쳐", "사진 삭제"};
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
         alt_bld.setTitle("사진 업로드");
