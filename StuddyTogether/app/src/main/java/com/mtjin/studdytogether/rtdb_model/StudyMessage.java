@@ -10,12 +10,13 @@ public class StudyMessage {
     private String dates; //글쓴날짜
     private String id; //푸쉬값
     private String city; //작성도시
+    private String uid; //작성자 uid
 
     public StudyMessage() {
 
     }
 
-    public StudyMessage(String title, String nickName, String content, String image, String photo, String age, String dates) {
+    public StudyMessage(String title, String nickName, String content, String image, String photo, String age, String dates, String uid) {
         this.title = title;
         this.nickName = nickName;
         this.content = content;
@@ -23,6 +24,7 @@ public class StudyMessage {
         this.photo = photo;
         this.age = age;
         this.dates = dates;
+        this.uid = uid;
     }
 
     public String getId() {
@@ -93,7 +95,16 @@ public class StudyMessage {
         return city;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public void setCity(String city) {
+
         this.city = city;
     }
 }

@@ -24,11 +24,18 @@
 
             <TextView
                 android:id="@+id/detail_tv_title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="10"
                 android:text="제목입니다."
                 android:textSize="20dp"
                 android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/detail_btn_trash"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/trash" />
         </LinearLayout>
 
         <LinearLayout
@@ -134,6 +141,7 @@
             android:gravity="right"
             android:text="댓글"
             android:textSize="20dp"
+            android:textStyle="bold"
             android:layout_marginBottom="15dp"/>
     </LinearLayout>
 

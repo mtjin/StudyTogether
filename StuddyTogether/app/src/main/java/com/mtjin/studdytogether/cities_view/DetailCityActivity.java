@@ -1,17 +1,29 @@
 package com.mtjin.studdytogether.cities_view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.view.CommentActivity;
 import com.mtjin.studdytogether.view.PhotoZoomActivity;
+import com.mtjin.studdytogether.view.WriteActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -24,10 +36,15 @@ public class DetailCityActivity extends AppCompatActivity {
     private CircleImageView mPhotoImageView; //내프로필사진
     private TextView mDatesTextView; //날짜
     private TextView mCommentTextView; //댓글
+    private ImageButton mTrashImageButton; //삭제버튼
 
-    //게시물id, 도시
+    private FirebaseAuth mFirebaseAuth; //인증객체(uid토큰 받기가능)
+
+    //게시물id, 도시 , 현재접속유저id,
     private String mId;
     private String mCity;
+    private String currentUserUid;
+    private String messageUid;
     //게시물
     private String mNickName;
     private String mAge; //나이대
@@ -36,6 +53,10 @@ public class DetailCityActivity extends AppCompatActivity {
     private String mContent; //내용
     private String mMessagePhoto; //게시물에 업로드한 사진
     private String mDate; //날짜
+
+
+    DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 root
+    DatabaseReference mMessageDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +70,12 @@ public class DetailCityActivity extends AppCompatActivity {
         mDatesTextView = findViewById(R.id.detail_tv_date);
         mMessageTextView = findViewById(R.id.detail_tv_message);
         mCommentTextView = findViewById(R.id.detail_tv_comment);
+        mTrashImageButton = findViewById(R.id.detail_btn_trash);
 
         //인텐트처리
         processIntent();
+        //지역과 게시물에 맞게 디비참조
+        mMessageDatabaseReference = mRootDatabaseReference.child(mCity).child(mId);
         //프로필사진클릭시 줌인줌아웃가능
         mPhotoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +110,53 @@ public class DetailCityActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //게시글 삭제
+        mTrashImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentUserUid.equals(messageUid)) { //작성자가 맞으면 삭제가능
+                    showMessge();
+                }else{
+                    Toast.makeText(getApplicationContext(), "본인 게시물 외에는 삭제가 불가능합니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void showMessge() {
+
+        //다이얼로그 객체 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //속성 지정
+        builder.setTitle("안내");
+        builder.setMessage("해당 글을 삭제하면 복구할 수 없습니다 " +
+                "삭제 하시겠습니까?");
+        //아이콘
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+        //예 버튼 눌렀을 때
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mMessageDatabaseReference.setValue(null);
+                Toast.makeText(getApplicationContext(), "게시물이 삭제되었습니디.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+
+        //예 버튼 눌렀을 때
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        //만들어주기
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void processIntent(){
@@ -106,6 +177,7 @@ public class DetailCityActivity extends AppCompatActivity {
         mMessagePhoto = bundle.getString("messagePhoto"); //업로드하는사진
         mImage=  bundle.getString("messageImage"); //내 프로필사진
         mContent = bundle.getString("messageContent"); //내용
+        messageUid = bundle.getString("uid"); //작성자 uid
 
         //뷰 set
         mTitleTextView.setText(mTitle);
@@ -123,5 +195,14 @@ public class DetailCityActivity extends AppCompatActivity {
         } else {
             //사진첨부안했으니 안올림
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //현재 유저 uid
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        currentUserUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
+
     }
 }

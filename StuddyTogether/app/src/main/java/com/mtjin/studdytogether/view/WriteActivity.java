@@ -44,8 +44,7 @@ public class WriteActivity extends AppCompatActivity {
     private Bitmap img; //비트맵 업로드사진
     private Uri mDownloadImageUri; //업로드사진 스토리지 URI
     private String mUid; //사용자 토큰 고유 아이디
-    private FirebaseAuth mFirebaseAuth; //인증객체
-    private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
+    private FirebaseAuth mFirebaseAuth; //인증객체(uid발급가능)
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mMessageImageRef; //게시물이미지 담을 파베 스토리지
 
@@ -122,8 +121,8 @@ public class WriteActivity extends AppCompatActivity {
         final String title = titleEditText.getText().toString();
         final String contents = contentsEditText.getText().toString();
         if (title != null && contents != null) {
-            loading(); //로딩 다이얼로그
             if (img != null) {
+                loading(); //로딩 다이얼로그
                 //파이어베이스 스토리지에 업로드
                 Toast.makeText(WriteActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -155,12 +154,15 @@ public class WriteActivity extends AppCompatActivity {
                             Calendar time = Calendar.getInstance();
                             String dates = format1.format(time.getTime());
                             bundle.putString("dates", dates);
+                            bundle.putString("uid", mUid);
                             intent.putExtras(bundle);
                             setResult(RESULT_OK, intent);
+                            progressDialog.dismiss();
                             finish();
 
                         } else {
                             // Handle failures
+                            progressDialog.dismiss();
                             Toast.makeText(WriteActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -176,6 +178,7 @@ public class WriteActivity extends AppCompatActivity {
                 Calendar time = Calendar.getInstance();
                 String dates = format1.format(time.getTime());
                 bundle.putString("dates", dates);
+                bundle.putString("uid", mUid);
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -226,7 +229,6 @@ public class WriteActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mMessageImageRef = mStorageRef.child(mUid + "messageImage"); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
         // Log.d("PROFILE22", mEmail);

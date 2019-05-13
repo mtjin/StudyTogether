@@ -1,18 +1,30 @@
 package com.mtjin.studdytogether.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.app.AlertDialog;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.cities_view.DetailCityActivity;
 import com.mtjin.studdytogether.view.CommentActivity;
@@ -24,10 +36,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>  {
     Context context;
+    AppCompatActivity appCompatActivity;
     ArrayList<StudyMessage> items = new ArrayList<StudyMessage>();
 
-    public  MessageAdapter(ArrayList<StudyMessage> items, Context context){
+    //디비참조
+    DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 root
+    DatabaseReference mMessageDatabaseReference;
+    //해당게시물 존재하는지
+    Boolean isHasMessage;
+
+    //인텐트사용을 위해 context와  삭제버튼시 다이얼로그를 띄우기위해 Activity받음
+    public  MessageAdapter(ArrayList<StudyMessage> items, Context context, AppCompatActivity appCompatActivity){
         this.context =  context;
+        this.appCompatActivity = appCompatActivity;
         addItems(items);
     }
 
@@ -63,6 +84,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override //홀더가 갖고있는 뷰에 데이터들을 세팅해줍니다.
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int i) {
         final StudyMessage model = items.get(i);
+        //홀더결합
         holder.titleTextView.setText(model.getTitle());
         holder.nickNameTextView.setText(model.getNickName());
         holder.ageTextView.setText(model.getAge());
@@ -79,21 +101,52 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
         holder.datesTextView.setText(model.getDates());
 
+        //게시글삭제
+        holder.trashImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //지역과 게시물에 맞게 디비참조
+                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity()).child(model.getId());
+                FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+                String currentUserUid = mFirebaseAuth.getUid();
+                if(currentUserUid.equals(model.getUid())) { //작성자가 맞으면 삭제가능
+                    showMessge();
+                }else{
+                    Toast.makeText(context, "본인 게시물 외에는 삭제가 불가능합니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-
+        //댓글쓰기
         holder.commentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.getId();
-                Intent intent = new Intent(context, CommentActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", model.getId());
-                bundle.putString("city", model.getCity());
-                Log.d("TEST11", model.getId());
-                Log.d("TEST11", model.getCity());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
+                mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        isHasMessage = dataSnapshot.hasChild(model.getId());
+                        if(isHasMessage){
+                            model.getId();
+                            Intent intent = new Intent(context, CommentActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", model.getId());
+                            bundle.putString("city", model.getCity());
+                            Log.d("TEST11", model.getId());
+                            Log.d("TEST11", model.getCity());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        }else{
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                    }
+                });
             }
         });
 
@@ -101,21 +154,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.messageTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DetailCityActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", model.getId());
-                bundle.putString("city", model.getCity());
-                bundle.putString("messageTitle", model.getTitle());
-                bundle.putString("messageDate", model.getDates());
-                bundle.putString("messageNIckName", model.getNickName());
-                bundle.putString("messageAge", model.getAge());
-                bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
-                bundle.putString("messageImage", model.getImage()); //내 프로필사진
-                bundle.putString("messageContent", model.getContent()); //내용
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
+                mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        isHasMessage = dataSnapshot.hasChild(model.getId());
+                        if(isHasMessage){
+                            Intent intent = new Intent(context, DetailCityActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", model.getId()); //게시물 id
+                            bundle.putString("city", model.getCity()); //도시 id
+                            bundle.putString("uid", model.getUid()); //작성자 uid
+                            bundle.putString("messageTitle", model.getTitle());
+                            bundle.putString("messageDate", model.getDates());
+                            bundle.putString("messageNIckName", model.getNickName());
+                            bundle.putString("messageAge", model.getAge());
+                            bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
+                            bundle.putString("messageImage", model.getImage()); //내 프로필사진
+                            bundle.putString("messageContent", model.getContent()); //내용
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        }else{
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                    }
+                });
             }
         });
 
@@ -123,20 +192,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.messageImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DetailCityActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", model.getId());
-                bundle.putString("city", model.getCity());
-                bundle.putString("messageTitle", model.getTitle());
-                bundle.putString("messageDate", model.getDates());
-                bundle.putString("messageNIckName", model.getNickName());
-                bundle.putString("messageAge", model.getAge());
-                bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
-                bundle.putString("messageImage", model.getImage()); //내 프로필사진
-                bundle.putString("messageContent", model.getContent()); //내용
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
+                mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        isHasMessage = dataSnapshot.hasChild(model.getId());
+                        if(isHasMessage){
+                            Intent intent = new Intent(context, DetailCityActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", model.getId());
+                            bundle.putString("city", model.getCity());
+                            bundle.putString("uid", model.getUid()); //작성자 uid
+                            bundle.putString("messageTitle", model.getTitle());
+                            bundle.putString("messageDate", model.getDates());
+                            bundle.putString("messageNIckName", model.getNickName());
+                            bundle.putString("messageAge", model.getAge());
+                            bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
+                            bundle.putString("messageImage", model.getImage()); //내 프로필사진
+                            bundle.putString("messageContent", model.getContent()); //내용
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        }else{
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                    }
+                });
             }
         });
     }
@@ -151,6 +237,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         CircleImageView photoImageView;
         TextView datesTextView;
         TextView commentTextView; //댓글
+        ImageButton trashImageButton;
 
         public MessageViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -162,7 +249,43 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             photoImageView = itemView.findViewById(R.id.message_iv_profile); //내 프로필사진
             datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
             commentTextView = itemView.findViewById(R.id.message_tv_comment); //댓글부분 (클릭시 댓글창으로 이동)
+            trashImageButton = itemView.findViewById(R.id.message_btn_trash);
 
         }
+    }
+
+    public void showMessge() {
+
+        //다이얼로그 객체 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(appCompatActivity);
+        //속성 지정
+        builder.setTitle("안내");
+        builder.setMessage("해당 글을 삭제하면 복구할 수 없습니다 " +
+                "삭제 하시겠습니까?");
+        //아이콘
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+        //예 버튼 눌렀을 때
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(appCompatActivity, "해당 게시물이 삭제되었습니디.", Toast.LENGTH_SHORT).show();
+                mMessageDatabaseReference.setValue(null);
+               // ((Activity)context).finish();
+            }
+        });
+
+
+        //예 버튼 눌렀을 때
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        //만들어주기
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

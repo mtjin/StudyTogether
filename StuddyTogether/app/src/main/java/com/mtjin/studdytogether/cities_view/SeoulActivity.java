@@ -92,7 +92,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
 
 
         mMessageList = new ArrayList<>();
-        mMessageAdapter = new MessageAdapter(mMessageList, getApplicationContext());
+        mMessageAdapter = new MessageAdapter(mMessageList, getApplicationContext(), SeoulActivity.this);
 
         //아래구분선 세팅
         mMessageRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -172,8 +172,8 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     String id = dataSnapshot2.getKey();
                     studyMessage.setId(id);
                     studyMessage.setCity("seoulStudy");
-                    //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색)
-                    if(studyMessage.getTitle().contains(searchText) || studyMessage.getContent().contains(searchText)) {
+                    //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색) (대소문자 상관없이 찾음)
+                    if(studyMessage.getTitle().toLowerCase().contains(searchText) || studyMessage.getContent().toLowerCase().contains(searchText)) {
                         mMessageList.add(studyMessage);
                     }
                 }
@@ -199,8 +199,8 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                 String contents = bundle.getString("contents");
                 String imageUri = bundle.getString("donwnloadImageUri"); //글에올린사진
                 String dates = bundle.getString("dates");
-                mStudyMessage = new StudyMessage(title, mNickName, contents, mImage, imageUri, mAge, dates);
-
+                String uid = bundle.getString("uid");
+                mStudyMessage = new StudyMessage(title, mNickName, contents, mImage, imageUri, mAge, dates, uid);
                 //리사이클러뷰에 쓴 글 추가
                 mSeoulDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.
                         .setValue(mStudyMessage); //DB에 데이터넣음

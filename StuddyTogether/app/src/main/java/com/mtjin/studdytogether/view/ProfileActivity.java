@@ -75,8 +75,8 @@ public class ProfileActivity extends AppCompatActivity {
     private int mTmpAge; //스피너 기존값 초기세팅해주기위해 사용
     private int mTmpSex; // ''
     private Bitmap img; //비트맵 프로필사진 (이걸
-    private FirebaseAuth mFirebaseAuth; //인증객체
-    private FirebaseUser mFirebaseUser; //인증이 되면 이객체를 얻을 수 있다. (인증된 유저받아올 수 있음)
+    private FirebaseAuth mFirebaseAuth; //인증객체(uid토큰 받기가능)
+    private FirebaseUser mFirebaseUser; //uid토큰을 발급받은 즉, 인증이된 유저의 이메일같은 정보를 가져올 수 있다.
     private StorageReference mStorageRef; //파이어베이스 스토리지
     private StorageReference mProfileRef; //프로필이미지 담을 파베 스토리
 

@@ -34,6 +34,8 @@
             android:layout_weight="7"
             android:background="@drawable/round_gray_text"
             android:hint="댓글을 입력하세요"
+            android:maxLength="150"
+            android:maxLines="10"
             android:padding="5dp" />
 
         <Button

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,10 +38,12 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
 
     private String mId; //해당 게시물의 id
     private String mCity; //도시
+    private FirebaseAuth mFirebaseAuth; //인증객체(uid토큰 받기가능)
     //프로필
     private String mNickName;
     private String mTmpDownloadImageUri;
     private String mAge;
+    private String mUid;
     //날짜포맷
     SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
     //어댑터 , 아이템리스트
@@ -52,9 +55,8 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     private Comment mComment;
     //디비위치
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
-    DatabaseReference mCityDatabaseReference;
-
-
+    DatabaseReference mCityDatabaseReference; //여기에 값 추가
+    DatabaseReference mMessageDatabaseReference; //값 추가하기전에 해당 게시물이 삭제되었는지 확인
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,14 +113,22 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUid = mFirebaseAuth.getUid();
+    }
+
     public void writeComment() {
         String message = mWriteEditText.getText().toString();
         if (message.equals("")) { //빈칸인경우
             Toast.makeText(getApplicationContext(), "한글자 이상은 작성해야합니다.", Toast.LENGTH_SHORT).show();
         } else {
+
             Calendar time = Calendar.getInstance();
             String dates = format1.format(time.getTime()); //작성시간
-            mComment = new Comment(mNickName, mAge, mTmpDownloadImageUri, dates, message);
+            mComment = new Comment(mNickName, mAge, mTmpDownloadImageUri, dates, message, mUid);
 
             //리사이클러뷰에 쓴 글 추가
             mCityDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.

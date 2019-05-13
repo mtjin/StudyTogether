@@ -6,15 +6,17 @@ public class Comment {
     private String image;
     private String date;
     private String message;
+    private String uid;
 
     public  Comment(){}
 
-    public Comment(String nickName, String age, String image, String date, String message) {
+    public Comment(String nickName, String age, String image, String date, String message, String uid) {
         this.nickName = nickName;
         this.age = age;
         this.image = image;
         this.date = date;
         this.message = message;
+        this.uid = uid;
     }
 
     public String getDate() {
@@ -53,7 +55,16 @@ public class Comment {
         return image;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public void setImage(String image) {
+
         this.image = image;
     }
 }

@@ -24,11 +24,22 @@
 
             <TextView
                 android:id="@+id/message_tv_title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="10"
                 android:layout_height="match_parent"
                 android:textStyle="bold"
                 android:text="제목입니다."
+                android:maxLines="2"
+                android:maxLength="30"
                 android:textSize="20dp" />
+
+            <ImageButton
+                android:id="@+id/message_btn_trash"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/trash" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -118,8 +129,9 @@
             <ImageView
                 android:id="@+id/message_iv_photo"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:maxHeight="300dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/gallery"
                 android:adjustViewBounds="true" />
@@ -136,6 +148,7 @@
             android:layout_marginBottom="10dp"
             android:gravity="right"
             android:text="댓글"
+            android:textStyle="bold"
             android:textSize="20dp" />
     </LinearLayout>
 
