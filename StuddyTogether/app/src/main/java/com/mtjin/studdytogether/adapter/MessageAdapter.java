@@ -138,13 +138,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }else{
-                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -176,13 +175,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }else{
-                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -214,13 +212,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }else{
-                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
+                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT);
                     }
                 });
             }

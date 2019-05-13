@@ -57,6 +57,8 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
     DatabaseReference mCityDatabaseReference; //여기에 값 추가
     DatabaseReference mMessageDatabaseReference; //값 추가하기전에 해당 게시물이 삭제되었는지 확인
+    Boolean isHasMessage; //현재있는 게시물이 존재하는지 확인 (삭제되있으면 댓글작성불가)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,40 +123,54 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     public void writeComment() {
-        String message = mWriteEditText.getText().toString();
+        final String message = mWriteEditText.getText().toString();
         if (message.equals("")) { //빈칸인경우
-            Toast.makeText(getApplicationContext(), "한글자 이상은 작성해야합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "한글자 이상 작성해야합니다.", Toast.LENGTH_SHORT).show();
         } else {
-
-            Calendar time = Calendar.getInstance();
-            String dates = format1.format(time.getTime()); //작성시간
-            mComment = new Comment(mNickName, mAge, mTmpDownloadImageUri, dates, message, mUid);
-
-            //리사이클러뷰에 쓴 글 추가
-            mCityDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.
-                    .setValue(mComment); //DB에 데이터넣음
-
-            mCommentAdapter.clear();
-            mCityDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            mMessageDatabaseReference = mRootDatabaseReference.child(mCity);
+            mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() { //삭제된 게시물인지 확인
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //  if (dataSnapshot.hasChild(mId+"Comment")) {
-                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+                    isHasMessage = dataSnapshot.hasChild(mId);
+                    if (isHasMessage) {
+                        Calendar time = Calendar.getInstance();
+                        String dates = format1.format(time.getTime()); //작성시간
+                        mComment = new Comment(mNickName, mAge, mTmpDownloadImageUri, dates, message, mUid);
 
-                        Comment comment = dataSnapshot2.getValue(Comment.class);
-                        mCommentList.add(comment);
+                        //리사이클러뷰에 쓴 글 추가
+                        mCityDatabaseReference.push() //DB에 (MESSAGES_CHILD)messages라는 이름의 하위디렉토리(?)라는걸 만들고 여기다 데이터를 넣겠다고 생각하면된다.
+                                .setValue(mComment); //DB에 데이터넣음
+
+                        mCommentAdapter.clear();
+                        mCityDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                //  if (dataSnapshot.hasChild(mId+"Comment")) {
+                                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) { //하위노드가 없을 떄까지 반복
+
+                                    Comment comment = dataSnapshot2.getValue(Comment.class);
+                                    mCommentList.add(comment);
+                                }
+                                mCommentAdapter.notifyDataSetChanged();
+                                //    }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                     }
-                    mCommentAdapter.notifyDataSetChanged();
-                    //    }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
         }
-
+        mWriteEditText.setText(""); //작성후 빈칸초기화
     }
 
     //인텐트처리
