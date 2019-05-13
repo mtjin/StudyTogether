@@ -123,9 +123,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/gallery" />
-            <!--
-                      android:layout_margin="5dp"
-                android:padding="10dp"-->
+
         </LinearLayout>
 
         <TextView
@@ -135,7 +133,8 @@
             android:layout_marginRight="10dp"
             android:gravity="right"
             android:text="댓글"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_marginBottom="15dp"/>
     </LinearLayout>
 
 </ScrollView>

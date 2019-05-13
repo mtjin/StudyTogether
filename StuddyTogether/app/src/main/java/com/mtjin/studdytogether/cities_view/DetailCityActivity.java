@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mtjin.studdytogether.R;
+import com.mtjin.studdytogether.view.CommentActivity;
 import com.mtjin.studdytogether.view.PhotoZoomActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -66,6 +67,22 @@ public class DetailCityActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(DetailCityActivity.this , PhotoZoomActivity.class);
                 intent.putExtra("zoomMessagePhoto", mMessagePhoto);
+                startActivity(intent);
+            }
+        });
+
+        //댓글눌렀을떄 댓글쓰기화면으로
+        mCommentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailCityActivity.this, CommentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id",mId);
+                bundle.putString("city", mCity);
+                Log.d("TEST11", mId);
+                Log.d("TEST11", mCity);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
