@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlertDialog;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>  {
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     Context context;
     AppCompatActivity appCompatActivity;
     ArrayList<StudyMessage> items = new ArrayList<StudyMessage>();
@@ -46,8 +47,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     Boolean isHasMessage;
 
     //인텐트사용을 위해 context와  삭제버튼시 다이얼로그를 띄우기위해 Activity받음
-    public  MessageAdapter(ArrayList<StudyMessage> items, Context context, AppCompatActivity appCompatActivity){
-        this.context =  context;
+    public MessageAdapter(ArrayList<StudyMessage> items, Context context, AppCompatActivity appCompatActivity) {
+        this.context = context;
         this.appCompatActivity = appCompatActivity;
         addItems(items);
     }
@@ -58,17 +59,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     //아이템을 추가해주고싶을때 이거쓰면됨
-    public  void addItem(StudyMessage item){
+    public void addItem(StudyMessage item) {
         items.add(item);
     }
 
     //한꺼번에 추가해주고싶을떄
-    public void addItems(ArrayList<StudyMessage> items){
+    public void addItems(ArrayList<StudyMessage> items) {
         this.items = items;
     }
 
     //아이템 전부 삭제
-    public void clear(){
+    public void clear() {
         items.clear();
     }
 
@@ -109,9 +110,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity()).child(model.getId());
                 FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
                 String currentUserUid = mFirebaseAuth.getUid();
-                if(currentUserUid.equals(model.getUid())) { //작성자가 맞으면 삭제가능
+                if (currentUserUid.equals(model.getUid())) { //작성자가 맞으면 삭제가능
                     showMessge();
-                }else{
+                } else {
                     Toast.makeText(context, "본인 게시물 외에는 삭제가 불가능합니다.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -126,7 +127,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         isHasMessage = dataSnapshot.hasChild(model.getId());
-                        if(isHasMessage){
+                        if (isHasMessage) {
                             model.getId();
                             Intent intent = new Intent(context, CommentActivity.class);
                             Bundle bundle = new Bundle();
@@ -137,7 +138,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
-                        }else{
+                        } else {
                             Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -149,8 +150,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
 
-        //게시물 자세히보기 (내용물눌럿을때)
-        holder.messageTextView.setOnClickListener(new View.OnClickListener() {
+        //제목과 사진눌렀을때 게시글 자세히보기
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
@@ -158,7 +159,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         isHasMessage = dataSnapshot.hasChild(model.getId());
-                        if(isHasMessage){
+                        if (isHasMessage) {
                             Intent intent = new Intent(context, DetailCityActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("id", model.getId()); //게시물 id
@@ -174,7 +175,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
-                        }else{
+                        } else {
                             Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -186,42 +187,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
 
-        //게시물 자세히보기 (업로드한사진눌럿을때 위와동일코드)
-        holder.messageImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
-                mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        isHasMessage = dataSnapshot.hasChild(model.getId());
-                        if(isHasMessage){
-                            Intent intent = new Intent(context, DetailCityActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("id", model.getId());
-                            bundle.putString("city", model.getCity());
-                            bundle.putString("uid", model.getUid()); //작성자 uid
-                            bundle.putString("messageTitle", model.getTitle());
-                            bundle.putString("messageDate", model.getDates());
-                            bundle.putString("messageNIckName", model.getNickName());
-                            bundle.putString("messageAge", model.getAge());
-                            bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
-                            bundle.putString("messageImage", model.getImage()); //내 프로필사진
-                            bundle.putString("messageContent", model.getContent()); //내용
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtras(bundle);
-                            context.startActivity(intent);
-                        }else{
-                            Toast.makeText(context, "삭제된 게시물입니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-            }
-        });
     }
 
     //뷰들을 바인딩 해줍니다.
@@ -235,6 +201,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         TextView datesTextView;
         TextView commentTextView; //댓글
         ImageButton trashImageButton;
+        LinearLayout linearLayout; //사진과 게시글내용(클릭시 자세히보기 넘어가기위해)
 
         public MessageViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -247,7 +214,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
             commentTextView = itemView.findViewById(R.id.message_tv_comment); //댓글부분 (클릭시 댓글창으로 이동)
             trashImageButton = itemView.findViewById(R.id.message_btn_trash);
-
+            linearLayout = itemView.findViewById(R.id.message_linearlayout);
         }
     }
 
@@ -269,7 +236,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(appCompatActivity, "해당 게시물이 삭제되었습니디.", Toast.LENGTH_SHORT).show();
                 mMessageDatabaseReference.setValue(null);
-               // ((Activity)context).finish();
+                // ((Activity)context).finish();
             }
         });
 

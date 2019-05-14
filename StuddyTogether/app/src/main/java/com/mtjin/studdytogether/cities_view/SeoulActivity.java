@@ -40,13 +40,14 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     private String mEmail; //이메일
     private String mAge; //나이대
     private String mImage; //프로필사진
-
-    private StudyMessage mStudyMessage; //글 아이템
-
-    private MessageAdapter mMessageAdapter;
+    //도시
+    private String mCityStudy = "seoulStudy";
+    //리사이클러뷰 구성
+    private StudyMessage mStudyMessage; //게시글 아이템
+    private MessageAdapter mMessageAdapter; //게시글어댑터
 
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
-    DatabaseReference mSeoulDatabaseReference = mRootDatabaseReference.child("seoulStudy"); //profile이란 이름의 하위 데이터베이스
+    DatabaseReference mSeoulDatabaseReference = mRootDatabaseReference.child(mCityStudy); //profile이란 이름의 하위 데이터베이스
 
     private EditText mSearchEditText; //검색텍스트
     private RecyclerView mMessageRecyclerView;
@@ -110,7 +111,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     StudyMessage studyMessage = dataSnapshot2.getValue(StudyMessage.class);
                     String id = dataSnapshot2.getKey();
                     studyMessage.setId(id);
-                    studyMessage.setCity("seoulStudy");
+                    studyMessage.setCity(mCityStudy);
 
                     // [START_EXCLUDE]
                     // Update RecyclerView
@@ -171,7 +172,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     StudyMessage studyMessage = dataSnapshot2.getValue(StudyMessage.class);
                     String id = dataSnapshot2.getKey();
                     studyMessage.setId(id);
-                    studyMessage.setCity("seoulStudy");
+                    studyMessage.setCity(mCityStudy);
                     //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색) (대소문자 상관없이 찾음)
                     if(studyMessage.getTitle().toLowerCase().contains(searchText) || studyMessage.getContent().toLowerCase().contains(searchText)) {
                         mMessageList.add(studyMessage);
@@ -245,7 +246,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     StudyMessage studyMessage = dataSnapshot2.getValue(StudyMessage.class);
                     String id = dataSnapshot2.getKey();
                     studyMessage.setId(id);
-                    studyMessage.setCity("seoulStudy");
+                    studyMessage.setCity(mCityStudy);
                     // [START_EXCLUDE]
                     // Update RecyclerView
                     mMessageList.add(studyMessage);

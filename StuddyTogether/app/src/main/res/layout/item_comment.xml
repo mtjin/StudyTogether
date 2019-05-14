@@ -75,8 +75,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_gray_text"
                 android:maxLength="150"
-                android:maxLines="10"
-                android:padding="5dp"
+                android:maxLines="15"
+                android:padding="10dp"
                 android:text="메세지 내용"
                 android:textSize="15dp" />
 

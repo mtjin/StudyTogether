@@ -3,17 +3,17 @@
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginTop="3dp">
+    android:layout_marginTop="3dp"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/thin_down_border"
         android:orientation="vertical"
-        android:padding="3dp"
-        android:background="@drawable/thin_down_border">
+        android:padding="3dp">
 
 
         <LinearLayout
@@ -25,13 +25,13 @@
             <TextView
                 android:id="@+id/message_tv_title"
                 android:layout_width="0dp"
-                android:layout_weight="10"
                 android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="제목입니다."
-                android:maxLines="2"
+                android:layout_weight="10"
                 android:maxLength="30"
-                android:textSize="20dp" />
+                android:maxLines="2"
+                android:text="제목입니다."
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/message_btn_trash"
@@ -64,7 +64,7 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="@string/nickName"
-                android:textSize="14dp"/>
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -101,43 +101,47 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/message_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/message_tv_message"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="3dp"
-                android:text="이 스터디는 프로그래밍을 공부하기위한 스터디입니다
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:id="@+id/message_tv_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:maxLength="1000"
+                    android:maxLines="6"
+                    android:padding="3dp"
+                    android:text="이 스터디는 프로그래밍을 공부하기위한 스터디입니다
 프로그래밍언어는 자바를 주로 다룰 것이며 자바를 끝낸 후 안드로이드를 공부하고 팀프로젝트도 할 예정입니다. 많은참여바랍니다!!"
-                android:textSize="15dp"
-                android:maxLength="1000"
-                android:maxLines="6"/>
-        </LinearLayout>
+                    android:textSize="15dp" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/message_iv_photo"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:maxHeight="300dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/gallery"
-                android:adjustViewBounds="true" />
-            <!--
-                      android:layout_margin="5dp"
-                android:padding="10dp"-->
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/message_iv_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="300dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/gallery" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
@@ -148,8 +152,8 @@
             android:layout_marginBottom="10dp"
             android:gravity="right"
             android:text="댓글"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout><!--

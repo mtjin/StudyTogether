@@ -557,11 +557,4 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d("GLIDE", mTmpDownloadImageUri);
         }
     }
-
-    /*//이전 프로필과 똑같은지
-    public Boolean isSameBefore() {
-
-    }*/
-
-
 }
