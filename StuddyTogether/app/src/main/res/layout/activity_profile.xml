@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background_study"
     android:layout_height="match_parent"
-    android:background="@drawable/background_yellow"
     tools:context=".view.ProfileActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -40,6 +40,7 @@
             android:layout_marginTop="40dp"
             android:text="닉네임:"
             android:textSize="30dp"
+            android:textColor="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_iv_photo" />
 
@@ -52,6 +53,8 @@
             android:layout_marginTop="40dp"
             android:ems="10"
             android:hint="7글자 이하"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
             android:inputType="textPersonName"
             app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/profile_iv_photo" />
@@ -87,6 +90,7 @@
             android:layout_marginTop="32dp"
             android:text="성별:"
             android:textSize="30dp"
+            android:textColor="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -97,6 +101,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="28dp"
+            android:textColor="#000000"
             app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toBottomOf="@+id/profile_pt_nickname" />
     </LinearLayout>
@@ -120,6 +125,7 @@
             android:layout_marginTop="32dp"
             android:text="나이"
             android:textSize="30dp"
+            android:textColor="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -130,6 +136,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="28dp"
+            android:textColor="#000000"
             app:layout_constraintStart_toEndOf="@+id/textView5"
             app:layout_constraintTop_toBottomOf="@+id/profile_sp_sex" />
     </LinearLayout>

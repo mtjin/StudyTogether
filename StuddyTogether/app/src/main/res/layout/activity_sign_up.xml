@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_yellow"
+    android:background="@drawable/background_study"
     tools:context=".view.SignUpActivity">
 
     <EditText
@@ -15,6 +15,8 @@
         android:ems="10"
         android:hint="이메일을 입력해주세요"
         android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_tv_text4" />
@@ -27,6 +29,8 @@
         android:ems="10"
         android:hint="비밀번호를 입력해주세요"
         android:inputType="textPassword"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_pt_id" />
@@ -43,9 +47,11 @@
         android:ems="10"
         android:hint="비밀번호 확인"
         android:inputType="textPassword"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_pt_password" />" />
+        app:layout_constraintTop_toBottomOf="@+id/signup_pt_password" />
 
     <Button
         android:id="@+id/signup_btn_signup"
@@ -83,6 +89,8 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="1dp"
         android:text="Email"
+        android:textColor="#000000"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/signup_pt_id"
         app:layout_constraintEnd_toStartOf="@+id/signup_pt_id"
         app:layout_constraintStart_toStartOf="parent" />
@@ -97,6 +105,9 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="1dp"
         android:text="PW"
+
+        android:textColor="#000000"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/signup_pt_password"
         app:layout_constraintEnd_toStartOf="@+id/signup_pt_password"
         app:layout_constraintStart_toStartOf="parent" />
@@ -111,6 +122,8 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="1dp"
         android:text="Confirm"
+        android:textStyle="bold"
+        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@+id/signup_pt_passconfirm"
         app:layout_constraintEnd_toStartOf="@+id/signup_pt_passconfirm"
         app:layout_constraintStart_toStartOf="parent" />
@@ -122,8 +135,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="Welcome to With Us"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

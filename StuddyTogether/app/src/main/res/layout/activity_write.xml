@@ -72,7 +72,7 @@
             android:id="@+id/write_iv_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/gallery"
+            android:src="@drawable/ic_add_a_photo_black_24dp"
             android:scaleType="fitCenter" />
     </LinearLayout>
 
