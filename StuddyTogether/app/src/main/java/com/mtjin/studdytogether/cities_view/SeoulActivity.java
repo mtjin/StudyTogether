@@ -251,7 +251,8 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     // Update RecyclerView
                     mMessageList.add(studyMessage);
                 }
-                mMessageAdapter.notifyDataSetChanged();
+             //   mMessageAdapter.notifyDataSetChanged();
+                mMessageRecyclerView.setAdapter(mMessageAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 

@@ -53,6 +53,7 @@ public class DetailCityActivity extends AppCompatActivity {
     private String mContent; //내용
     private String mMessagePhoto; //게시물에 업로드한 사진
     private String mDate; //날짜
+    private String mCommentNum; // 댓글개수
 
 
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 root
@@ -178,6 +179,7 @@ public class DetailCityActivity extends AppCompatActivity {
         mImage=  bundle.getString("messageImage"); //내 프로필사진
         mContent = bundle.getString("messageContent"); //내용
         messageUid = bundle.getString("uid"); //작성자 uid
+        mCommentNum = bundle.getString("commentNum");
 
         //뷰 set
         mTitleTextView.setText(mTitle);
@@ -185,6 +187,7 @@ public class DetailCityActivity extends AppCompatActivity {
         mAgeTextView.setText(mAge);
         mMessageTextView.setText(mContent);
         mDatesTextView.setText(mDate);
+        mCommentTextView.setText(mCommentNum);
         if (mImage.equals("basic")) { //프로필사진이 없는경우
             Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/studdytogether.appspot.com/o/Basisc%2FbasicProfile.png?alt=media&token=dd0e0e17-a057-40a4-ae7f-364fa529e2a3").into(mPhotoImageView);
         } else {
@@ -203,6 +206,5 @@ public class DetailCityActivity extends AppCompatActivity {
         //현재 유저 uid
         mFirebaseAuth = FirebaseAuth.getInstance();
         currentUserUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
-
     }
 }

@@ -83,7 +83,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     @Override //홀더가 갖고있는 뷰에 데이터들을 세팅해줍니다.
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull final MessageViewHolder holder, int i) {
         final StudyMessage model = items.get(i);
         //홀더결합
         holder.titleTextView.setText(model.getTitle());
@@ -158,7 +158,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        isHasMessage = dataSnapshot.hasChild(model.getId());
+                        isHasMessage = dataSnapshot.hasChild(model.getId()); //삭제된 게시물이 아닌지 검사
                         if (isHasMessage) {
                             Intent intent = new Intent(context, DetailCityActivity.class);
                             Bundle bundle = new Bundle();
@@ -172,6 +172,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             bundle.putString("messagePhoto", model.getPhoto()); //업로드하는사진
                             bundle.putString("messageImage", model.getImage()); //내 프로필사진
                             bundle.putString("messageContent", model.getContent()); //내용
+                            bundle.putString("commentNum", model.getCommentNum());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
@@ -187,6 +188,26 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
 
+        //게시글 댓글 개수 세팅
+        mRootDatabaseReference.child(model.getCity()).child(model.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(model.getId()+"Comment")){ //댓글이 있는 게시물이라면
+                    Log.d("TTTT", dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"" );
+                    Log.d("TTTT", holder.commentTextView.getText().toString());
+                    holder.commentTextView.setText("댓글: " + dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"개");
+                    model.setCommentNum("댓글: " + dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"개");
+                }else {
+                    model.setCommentNum("댓글: 0개");
+                    holder.commentTextView.setText("댓글: 0개");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -199,7 +220,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         TextView messageTextView;
         CircleImageView photoImageView;
         TextView datesTextView;
-        TextView commentTextView; //댓글
+        TextView commentTextView; //댓글 (댓글개수)
         ImageButton trashImageButton;
         LinearLayout linearLayout; //사진과 게시글내용(클릭시 자세히보기 넘어가기위해)
 
@@ -212,7 +233,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageTextView = itemView.findViewById(R.id.message_tv_message);
             photoImageView = itemView.findViewById(R.id.message_iv_profile); //내 프로필사진
             datesTextView = itemView.findViewById(R.id.message_tv_date); //글쓴 날짜
-            commentTextView = itemView.findViewById(R.id.message_tv_comment); //댓글부분 (클릭시 댓글창으로 이동)
+            commentTextView = itemView.findViewById(R.id.message_tv_commentNum); //댓글부분 (클릭시 댓글창으로 이동)
             trashImageButton = itemView.findViewById(R.id.message_btn_trash);
             linearLayout = itemView.findViewById(R.id.message_linearlayout);
         }

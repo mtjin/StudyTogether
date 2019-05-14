@@ -11,7 +11,7 @@ public class StudyMessage {
     private String id; //푸쉬값
     private String city; //작성도시
     private String uid; //작성자 uid
-
+    private String commentNum; //댓글개수용 MessageAdapter에서 댓글개수 보낼려고 만들었음
     public StudyMessage() {
 
     }
@@ -106,6 +106,14 @@ public class StudyMessage {
     public void setCity(String city) {
 
         this.city = city;
+    }
+
+    public String getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(String commentNum) {
+        this.commentNum = commentNum;
     }
 }
 
