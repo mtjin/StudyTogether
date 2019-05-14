@@ -18,14 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.PhotoZoomActivity"></activity>
+        <activity android:name=".MainActivity"
+            android:theme="@style/NoBarTheme"></activity>
+        <activity android:name=".view.PhotoZoomActivity" />
         <activity android:name=".cities_view.DetailCityActivity" />
         <activity
             android:name=".view.CommentActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".view.WriteActivity" />
         <activity android:name=".cities_view.SeoulActivity" />
-        <activity android:name=".view.MainActivity" />
         <activity android:name=".view.SignUpActivity" />
         <activity android:name=".view.LoginActivity" />
         <activity

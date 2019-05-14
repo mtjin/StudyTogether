@@ -43,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mtjin.studdytogether.MainActivity;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.function.DataValidation;
 import com.mtjin.studdytogether.rtdb_model.Profile;
@@ -196,7 +197,6 @@ public class ProfileActivity extends AppCompatActivity {
         isNickExisted1 = false;
         isHasRemovedNickName = false;
         isCheckid = false;
-        isHasRemovedNickName = null;
 
         mCheckidButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +210,6 @@ public class ProfileActivity extends AppCompatActivity {
                     isNickExisted1 = false;
                     isHasRemovedNickName = false;
                     isCheckid = true;
-                    isHasRemovedNickName = null;
                     mRootDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

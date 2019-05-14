@@ -59,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
                 android:gravity="center"
-                android:text="공부의신"
+                android:text="@string/nickName"
                 android:textSize="14dp" />
 
             <TextView

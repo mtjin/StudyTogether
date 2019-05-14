@@ -39,7 +39,7 @@ public class DataValidation {
 
     /*
      * 이메일 아이디 . # $ [ ] 5가지 리얼타임디비에 child값으로 못넣으므로 _로 반환해줌
-     * @Param 이메일 (ex.210@gmail.com)
+     * @Param 이메일 (MainActivity.210@gmail.com)
      * @Return .(점) 다없앤값 (ex210@gmailcom)
      *
      * */
