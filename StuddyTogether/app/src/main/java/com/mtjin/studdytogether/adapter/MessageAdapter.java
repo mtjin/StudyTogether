@@ -1,6 +1,5 @@
 package com.mtjin.studdytogether.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.cities_view.DetailCityActivity;
-import com.mtjin.studdytogether.view.CommentActivity;
+import com.mtjin.studdytogether.activity.CommentActivity;
 import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.util.ArrayList;

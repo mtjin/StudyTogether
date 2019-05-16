@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_yellow"
     android:orientation="vertical"
-    tools:context=".view.WriteActivity">
+    tools:context=".activity.WriteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

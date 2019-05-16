@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.rtdb_model.Comment;
-import com.mtjin.studdytogether.view.PhotoZoomActivity;
+import com.mtjin.studdytogether.activity.PhotoZoomActivity;
 
 import java.util.ArrayList;
 

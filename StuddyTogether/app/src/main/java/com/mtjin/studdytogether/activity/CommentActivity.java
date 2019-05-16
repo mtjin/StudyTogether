@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.view;
+package com.mtjin.studdytogether.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

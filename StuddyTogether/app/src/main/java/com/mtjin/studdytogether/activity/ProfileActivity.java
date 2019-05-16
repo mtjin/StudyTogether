@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.view;
+package com.mtjin.studdytogether.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -133,9 +133,9 @@ public class ProfileActivity extends AppCompatActivity {
         //스피너 설정
         spinnerDo();
         //Shared에서 이전에 저장했던것들 변수에저장
-       loadShared();
+        loadShared();
         //Shared에서 꺼내온것들을 각각 알맞게 뷰에 세팅 (과거했던걸 세팅해놔줌)
-     loadInitalSetting();
+        loadInitalSetting();
 
         //프로필이미지 클릭 시
         mPhotoCircleImageView.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +192,8 @@ public class ProfileActivity extends AppCompatActivity {
         mUid = mFirebaseAuth.getUid();   //사용자 고유 토큰 받아옴
         mEmail = mFirebaseUser.getEmail(); //가입한 이메일 받아옴
         mProfileRef = mStorageRef.child("profileImage").child(mUid); //프로필 스토리지 저장이름은 사용자 고유토큰과 스트링섞어서 만든다.
+        Log.d(TAG, "mUid: " + mUid);
+        Log.d(TAG, "mEmail: "+ mEmail);
 
         //초기화
         isNickExisted1 = false;
@@ -213,25 +215,24 @@ public class ProfileActivity extends AppCompatActivity {
                     mRootDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.hasChild("nickNameList") || dataSnapshot.child("nickNameList").hasChild(tmpNickName)) {
+                            if (dataSnapshot.hasChild("nickNameList") || dataSnapshot.child("nickNameList").hasChild(tmpNickName)) {
                                 if (!dataSnapshot.child("nickNameList").hasChild(tmpNickName) || dataSnapshot.child("nickNameList").child(tmpNickName).getValue().equals(mEmail)) { //사용가능닉네임
                                     Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
                                     Log.d(TAG, "1");
-                                    if ( dataSnapshot.child("nickNameList").hasChild(tmpNickName) && !dataSnapshot.child("nickNameList").child(tmpNickName).getValue().equals(mEmail)) { //원래랑 같은 닉네임 (지울필요 X)
+                                    if (dataSnapshot.child("nickNameList").hasChild(tmpNickName) && !dataSnapshot.child("nickNameList").child(tmpNickName).getValue().equals(mEmail)) { //원래랑 같은 닉네임 (지울필요 X)
                                         isHasRemovedNickName = false;
                                         Log.d(TAG, "2");
-                                    } else if(dataSnapshot.child("nickNameList").hasChild(tmpNickName)){ //원래랑 다른닉네임 원래닉네임은 지워줘야함
+                                    } else if (dataSnapshot.child("nickNameList").hasChild(tmpNickName)) { //원래랑 다른닉네임 원래닉네임은 지워줘야함
                                         //removeNickName = (String) dataSnapshot.child(tmpNickName).getValue(); //지워야할닉네임
-
                                         removeNickName = (String) dataSnapshot.child("profile").child(mUid).child("nickName").getValue(); //기존에 갖고있던 닉네임( nickNameList에서 지워줘야함)
                                         isHasRemovedNickName = true; //지울닉네임 존재 (기존닉네임
                                         Log.d(TAG, "3");
-                                    }else { //처음 닉네임 짓는경우
-                                        if ( dataSnapshot.hasChild("profile") && dataSnapshot.child("profile").hasChild(mUid)){
+                                    } else { //처음 닉네임 짓는경우
+                                        if (dataSnapshot.hasChild("profile") && dataSnapshot.child("profile").hasChild(mUid)) {
                                             isHasRemovedNickName = true;
                                             removeNickName = (String) dataSnapshot.child("profile").child(mUid).child("nickName").getValue(); //기존에 갖고있던 닉네임( nickNameList에서 지워줘야함)
                                             Log.d(TAG, "4");
-                                        }else {
+                                        } else {
                                             isHasRemovedNickName = false;
                                             Log.d(TAG, "5");
                                         }
@@ -243,7 +244,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     isHasRemovedNickName = false;
                                     Log.d(TAG, "6");
                                 }
-                            }else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다.", Toast.LENGTH_LONG).show();
                                 isNickExisted1 = false;
                                 isHasRemovedNickName = false;
@@ -266,8 +267,8 @@ public class ProfileActivity extends AppCompatActivity {
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("profilelogin", isCheckid+"");
-                Log.d("profilelogin1", isNickExisted1+"");
+                Log.d("profilelogin", isCheckid + "");
+                Log.d("profilelogin1", isNickExisted1 + "");
                 Log.d("profilelogin3", mUid);
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
@@ -277,7 +278,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                     } else if (mNickName != null && mSex != null) { //제대로 작성한 경우
                         loading();
-                        if (img != null && mTmpDownloadImageUri==null) { //프로필사진을 지정했을 경우
+                        if (img != null && mTmpDownloadImageUri == null) { //프로필사진을 지정했을 경우
                             //파이어베이스 스토리지에 업로드
                             Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();

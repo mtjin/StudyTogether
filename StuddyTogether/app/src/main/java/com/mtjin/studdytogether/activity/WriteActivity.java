@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.view;
+package com.mtjin.studdytogether.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -267,6 +267,7 @@ public class WriteActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else { //사진 삭제
                     photoImageView.setImageBitmap(null);
+                    photoImageView.setImageResource(R.drawable.ic_add_a_photo_black_24dp);
                     img = null;
                 }
             }

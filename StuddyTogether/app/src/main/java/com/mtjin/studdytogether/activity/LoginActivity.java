@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.view;
+package com.mtjin.studdytogether.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +18,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -86,9 +85,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCheckBox = findViewById(R.id.checkBox);
         googleButton = findViewById(R.id.login_btn_google);
         facebookLoginButton = findViewById(R.id.login_btn_facebook);
-        facebookLoginButton.setReadPermissions("email");
         mAuth = FirebaseAuth.getInstance(); //firebaseAuth 객체의 공유 인스턴스를 가져옵니다.
-        //페북로그인 관련
+        //페북로그인 관련( CallbackManager.Factory.create를 호출하여 로그인 응답을 처리할 콜백 관리자를 만듭니다.)
         callbackManager = CallbackManager.Factory.create();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -114,27 +112,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        handleFacebookAccessToken(loginResult.getAccessToken());
-                        /*Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                        startActivity(intent);*/
-                       // finish();
+        //페이스북로그인
+        facebookLoginButton.setReadPermissions("email");
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
 
-                    }
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+                // ...
+            }
 
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                    }
-                });
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+                // ...
+            }
+        });
 
         //로그인 버튼 클릭
         findViewById(R.id.login_btn_login).setOnClickListener(new View.OnClickListener() {
@@ -300,13 +298,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, " 페이스북 계정에 사용된 이메일로 이미 가입하셨습니다. 이메일과 비밀번호로 다시 시도해주세요.\"",
                                     Toast.LENGTH_SHORT).show();
                         }
 
                     }
                 });
     }
+
 
 
 }

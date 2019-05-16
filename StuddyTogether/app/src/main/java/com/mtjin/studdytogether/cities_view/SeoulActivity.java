@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.view.WriteActivity;
+import com.mtjin.studdytogether.activity.WriteActivity;
 import com.mtjin.studdytogether.adapter.MessageAdapter;
 import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 

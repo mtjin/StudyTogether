@@ -2,7 +2,6 @@ package com.mtjin.studdytogether.cities_view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,15 +14,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.view.CommentActivity;
-import com.mtjin.studdytogether.view.PhotoZoomActivity;
-import com.mtjin.studdytogether.view.WriteActivity;
+import com.mtjin.studdytogether.activity.CommentActivity;
+import com.mtjin.studdytogether.activity.PhotoZoomActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

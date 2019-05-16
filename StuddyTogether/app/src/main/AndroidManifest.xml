@@ -20,17 +20,17 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
             android:theme="@style/NoBarTheme"></activity>
-        <activity android:name=".view.PhotoZoomActivity" />
+        <activity android:name=".activity.PhotoZoomActivity" />
         <activity android:name=".cities_view.DetailCityActivity" />
         <activity
-            android:name=".view.CommentActivity"
+            android:name=".activity.CommentActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".view.WriteActivity" />
+        <activity android:name=".activity.WriteActivity" />
         <activity android:name=".cities_view.SeoulActivity" />
-        <activity android:name=".view.SignUpActivity" />
-        <activity android:name=".view.LoginActivity" />
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.LoginActivity" />
         <activity
-            android:name=".view.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -39,7 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ProfileActivity" />
+        <activity android:name=".activity.ProfileActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
