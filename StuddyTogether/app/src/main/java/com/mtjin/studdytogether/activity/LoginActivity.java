@@ -270,7 +270,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) { //task에서 다양한 정보를 담고있기 때문에 잘 사용하면된다.
                         if (!task.isSuccessful()) { //실패했다면
-                            Toast.makeText(LoginActivity.this, "인증 실패하였습니다", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "인증 실패하였습니다. 이미 가입된 이메일일수도 있습니다.", Toast.LENGTH_LONG).show();
+
                         } else { //성공했으면 다시 로그인액티비티에서 프로필액티비티로 가게해주면된다.
                             startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
                             finish();
@@ -298,7 +299,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, " 페이스북 계정에 사용된 이메일로 이미 가입하셨습니다. 이메일과 비밀번호로 다시 시도해주세요.\"",
+                            Toast.makeText(LoginActivity.this, " 페이스북 계정에 사용된 이메일로 이미 가입하셨습니다. 이메일과 비밀번호로 다시 시도해주세요.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
