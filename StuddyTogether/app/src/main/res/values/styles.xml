@@ -6,13 +6,15 @@
         <item name="colorPrimary">#000000</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
     <style name="NoBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">#000000</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
     <!--스플래쉬화면용-->
@@ -20,23 +22,7 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    액션바 커스터마이징
-    <style name="CustomActionBarTheme"
-        parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
-    </style>
 
-    <!-- ActionBar styles -->
-    <style name="MyActionBar"
-        parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">#FFFFFF</item>
-    </style>
 
-    <!--액션바텍스트-->
-    <style name="MyActionBarTitleText"
-        parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textColor">@color/yellowSplash</item>
-    </style>
 
 </resources>

@@ -316,6 +316,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                                         startActivity(intent);
                                         loadingEnd();//로딩종료
+                                        finish();
                                     } else {
                                         // Handle failures
                                         Toast.makeText(ProfileActivity.this, "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show();
@@ -338,6 +339,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                             startActivity(intent);
                             loadingEnd();//로딩종료
+                            finish();
 
                         } else { //프로필이미지 기본으로할경우
                             Toast.makeText(ProfileActivity.this, "업로드중입니다. 잠시만 기다려주세요", Toast.LENGTH_SHORT).show();
@@ -356,6 +358,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                             loadingEnd();
                             startActivity(intent);
+                            finish();
                         }
                     } else { //공백을 입력한 경우
                         Toast.makeText(ProfileActivity.this, "공백이 있으면 안됩니다", Toast.LENGTH_SHORT).show();

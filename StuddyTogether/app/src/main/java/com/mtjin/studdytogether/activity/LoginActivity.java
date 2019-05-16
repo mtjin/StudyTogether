@@ -152,6 +152,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         save(); //로그인 정보저장
                                         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                                         startActivity(intent);
+                                        finish();
                                     } else {
                                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                                         Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
@@ -297,6 +298,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                              mCurrentUser = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, " 페이스북 계정에 사용된 이메일로 이미 가입하셨습니다. 이메일과 비밀번호로 다시 시도해주세요.",
