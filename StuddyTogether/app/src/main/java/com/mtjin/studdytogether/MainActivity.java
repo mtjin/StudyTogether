@@ -25,6 +25,7 @@ import com.mtjin.studdytogether.activity.LoginActivity;
 import com.mtjin.studdytogether.activity.PhotoZoomActivity;
 import com.mtjin.studdytogether.activity.ProfileActivity;
 import com.mtjin.studdytogether.city_activity.SeoulActivity;
+import com.mtjin.studdytogether.function.BackPressedFunction;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
     private String mEmail; //이메일
     private String mAge; //나이대
     private String mImage; //프로필사진
+
+    //2번뒤로가기 클릭시 종료
+    private BackPressedFunction mBackPressedFunction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
             }
         });
 
-
+        mBackPressedFunction = new BackPressedFunction(this); //뒤로가기 2번시 종료 핸들러
 
     }
 
@@ -106,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
                 Intent intent = new Intent(this, SeoulActivity.class);
                 startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        mBackPressedFunction.onBackPressed();
     }
 
     @Override
