@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer"
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:background="@drawable/backfround_white_to_yellow"
+    android:gravity="start"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/drawer_civ_profileimage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:padding="8dp"
+        android:src="@drawable/profile" />
+
+    <TextView
+        android:id="@+id/drawer_tv_nickName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/nickName"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#84817E"
+        android:textSize="20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="40dp"
+        android:text="설정"
+        android:textColor="#000000"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/drawer_btn_profileSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/thin_up_down_border"
+        android:drawableLeft="@drawable/left_image_profile_menu"
+        android:drawablePadding="5dp"
+        android:padding="8dp"
+        android:text="프로필설정"
+        android:textColor="#84817E"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/drawer_btn_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/thin_down_border"
+        android:drawableLeft="@drawable/left_image_question_menu"
+        android:drawablePadding="5dp"
+        android:padding="8dp"
+        android:text="개발자문의"
+        android:textColor="#84817E"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/drawer_btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/thin_down_border"
+        android:drawableLeft="@drawable/left_image_logout_menu"
+        android:drawablePadding="5dp"
+        android:padding="8dp"
+        android:text="로그아웃"
+        android:textColor="#84817E"
+        android:textSize="30dp" />
+
+
+</LinearLayout>

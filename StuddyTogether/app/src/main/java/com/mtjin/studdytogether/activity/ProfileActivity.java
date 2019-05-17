@@ -537,7 +537,7 @@ public class ProfileActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    // 설정값을 불러오는 함수
+    // 쉐어드값을 불러오는 메소드
     private void loadShared() {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         //mEmail = pref.getString("email", "");

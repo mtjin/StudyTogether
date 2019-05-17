@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/comment_drawer_layout"
     tools:context=".activity.CommentActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/comment_swipe_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/comments_rev_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
     <LinearLayout
-        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/comments_pt_write"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="7"
-            android:background="@drawable/round_gray_text"
-            android:hint="댓글을 입력하세요"
-            android:maxLength="150"
-            android:maxLines="10"
-            android:padding="5dp" />
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/comment_swipe_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9">
 
-        <Button
-            android:id="@+id/comments_btn_send"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/comments_rev_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:background="@drawable/send" />
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/comments_pt_write"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="7"
+                android:background="@drawable/round_gray_text"
+                android:hint="댓글을 입력하세요(150자 이하)"
+                android:maxLength="150"
+                android:maxLines="10"
+                android:padding="5dp" />
+
+            <Button
+                android:id="@+id/comments_btn_send"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/send" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <include layout="@layout/activity_drawer" />
+</android.support.v4.widget.DrawerLayout>

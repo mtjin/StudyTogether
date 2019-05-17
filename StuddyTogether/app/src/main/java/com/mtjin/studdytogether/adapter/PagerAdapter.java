@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.mtjin.studdytogether.CityTabFragment;
+import com.mtjin.studdytogether.FreeBoardTabFragment;
 import com.mtjin.studdytogether.StudyRoomTabFragment;
-import com.mtjin.studdytogether.Tab3;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
@@ -27,8 +27,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 StudyRoomTabFragment tab2 = new StudyRoomTabFragment();
                 return tab2;
             case 2:
-                Tab3 tab3 = new Tab3();
-                return tab3;
+                FreeBoardTabFragment freeBoardTabFragment = new FreeBoardTabFragment();
+                return freeBoardTabFragment;
             default:
                 return null;
         }

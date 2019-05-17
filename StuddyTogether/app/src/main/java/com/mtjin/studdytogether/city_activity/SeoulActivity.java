@@ -1,36 +1,46 @@
-package com.mtjin.studdytogether.cities_view;
+package com.mtjin.studdytogether.city_activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
+import com.mtjin.studdytogether.activity.LoginActivity;
+import com.mtjin.studdytogether.activity.PhotoZoomActivity;
+import com.mtjin.studdytogether.activity.ProfileActivity;
 import com.mtjin.studdytogether.activity.WriteActivity;
 import com.mtjin.studdytogether.adapter.MessageAdapter;
 import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -56,14 +66,28 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArrayList<StudyMessage> mMessageList;
 
+    //드로어,메뉴
+    private DrawerLayout mDrawerLayout;
+    private View drawerView;
+    private Button mProfileMenuButton;
+    private Button mQuestionMenuButton;
+    private Button mLogoutButton;
+    private CircleImageView mDrawerProfileCircleImageView;
+    private TextView mDrawerNickNameTextView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seoul);
         setTitle("서울지역");
 
+        loadShared(); //프로필정보받아옴
+        setDrawer(); //드로어 세팅
+
         mSearchEditText = findViewById(R.id.seoul_et_search); //검색
         mMessageRecyclerView = findViewById(R.id.seoul_rev_message); //채팅메세지들 리사이클러뷰
+
 
         findViewById(R.id.seoul_tv_write).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +102,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) { //처리할 일
-                    if(mSearchEditText.getText().toString().trim().length() >=2) {
+                    if (mSearchEditText.getText().toString().trim().length() >= 2) {
                         searchPost(mSearchEditText.getText().toString().trim());
                         return true;
                     }
@@ -128,6 +152,23 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
             }
         });
 
+        mProfileMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                //이 플래그는 API 11 (허니콤)부터 사용이가능한데 그 이하버전은 0.2%수준이다.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                } else {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                }
+                startActivity(intent);
+            }
+        });
+
+
+
+
        /* // 키보드 올라올 때 RecyclerView의 위치를 마지막 포지션으로 이동
         mMessageRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -162,6 +203,8 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
         });*/
     }
 
+
+
     //검색기능
     public void searchPost(final String searchText) {
         mMessageAdapter.clear();
@@ -176,7 +219,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     studyMessage.setId(id);
                     studyMessage.setCity(mCityStudy);
                     //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색) (대소문자 상관없이 찾음)
-                    if(studyMessage.getTitle().toLowerCase().contains(searchText) || studyMessage.getContent().toLowerCase().contains(searchText)) {
+                    if (studyMessage.getTitle().toLowerCase().contains(searchText) || studyMessage.getContent().toLowerCase().contains(searchText)) {
                         mMessageList.add(studyMessage);
                     }
                 }
@@ -215,25 +258,25 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     protected void onResume() {
         super.onResume();
         //프로필 정보받아옴
-        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
+        loadShared();
+       /* SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         mEmail = pref.getString("email", "");
         mNickName = pref.getString("nickName", "");
         mSex = pref.getString("sex", "");
         mAge = pref.getString("age", "");
         mImage = pref.getString("image", "");
-        Log.d(TAG, mImage);
+        Log.d(TAG, mImage);*/
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // mFirebaseAdapter.startListening();  // FirebaseRecyclerAdapter 실시간 쿼리 시작
+        loadShared();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // mFirebaseAdapter.stopListening(); // FirebaseRecyclerAdapter 실시간 쿼리 중지
     }
 
 
@@ -253,7 +296,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
                     // Update RecyclerView
                     mMessageList.add(studyMessage);
                 }
-             //   mMessageAdapter.notifyDataSetChanged();
+                //   mMessageAdapter.notifyDataSetChanged();
                 mMessageRecyclerView.setAdapter(mMessageAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -266,11 +309,23 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
 
     }
 
+    // 쉐어드값을 불러오는 메소드
+    private void loadShared() {
+        SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
+        mEmail = pref.getString("email", "");
+        mNickName = pref.getString("nickName", "");
+        mSex = pref.getString("sex", "");
+        mAge = pref.getString("age", "");
+        mImage = pref.getString("image", "");
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
+
+    //옵션 메뉴
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -279,6 +334,112 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        mDrawerLayout.openDrawer(drawerView);
+        return true;
     }
+
+    public void setDrawer(){
+        //드로어,메뉴
+        mDrawerLayout = findViewById(R.id.seoul_drawer_layout);
+        drawerView = findViewById(R.id.drawer);
+        mProfileMenuButton = findViewById(R.id.drawer_btn_profileSetting);
+        mQuestionMenuButton = findViewById(R.id.drawer_btn_question);
+        mLogoutButton = findViewById(R.id.drawer_btn_logout);
+        mDrawerProfileCircleImageView = findViewById(R.id.drawer_civ_profileimage);
+        mDrawerNickNameTextView = findViewById(R.id.drawer_tv_nickName);
+        mDrawerNickNameTextView.setText(mNickName);
+        if (mImage.equals("basic")) { //프로필사진이 없는경우
+            Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/studdytogether.appspot.com/o/Basisc%2FbasicProfile.png?alt=media&token=dd0e0e17-a057-40a4-ae7f-364fa529e2a3").into(mDrawerProfileCircleImageView);
+        } else {
+            Glide.with(this).load(mImage).into(mDrawerProfileCircleImageView);
+        }
+        //드로어관련 클릭리스너
+        mProfileMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                //이 플래그는 API 11 (허니콤)부터 사용이가능한데 그 이하버전은 0.2%수준이다.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                }else{
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                }
+                startActivity(intent);
+            }
+        });
+        mQuestionMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                try {
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"seungeon.jin2@gmail.com"});
+
+                    intent.setType("text/html");
+                    intent.setPackage("com.google.android.gm");
+                    if (intent.resolveActivity(getPackageManager()) != null)
+                        startActivity(intent);
+
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    intent.setType("text/html");
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"seungeon.jin2@gmail.com"});
+                    startActivity(Intent.createChooser(intent, "Send Email"));
+                }
+            }
+        });
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(getApplicationContext(), "로그아웃 되었습니다", Toast.LENGTH_SHORT);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                //이 플래그는 API 11 (허니콤)부터 사용이가능한데 그 이하버전은 0.2%수준이다.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                } else {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                }
+                startActivity(intent);
+            }
+        });
+        mDrawerProfileCircleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PhotoZoomActivity.class);
+                intent.putExtra("zoomProfilePhoto", mImage);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+        mDrawerLayout.setDrawerListener(listener);
+        drawerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+    }
+    //드로어 리스너
+    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View view, float v) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View view) {
+
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View view) {
+
+        }
+
+        @Override
+        public void onDrawerStateChanged(int i) {
+
+        }
+    };
 }

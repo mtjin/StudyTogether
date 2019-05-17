@@ -30,6 +30,7 @@
                 android:maxLength="30"
                 android:maxLines="2"
                 android:text="제목입니다."
+                android:textColor="@color/textColor"
                 android:textSize="20dp"
                 android:textStyle="bold" />
 
@@ -64,6 +65,7 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="@string/nickName"
+                android:textColor="@color/textColor"
                 android:textSize="14dp" />
 
             <TextView
@@ -72,12 +74,14 @@
                 android:gravity="center"
                 android:text="| "
                 android:textSize="14dp"
+                android:textColor="@color/textColor"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/message_tv_age"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/textColor"
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="10대"
@@ -88,6 +92,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="|  "
+                android:textColor="@color/textColor"
                 android:textSize="14dp"
                 android:textStyle="bold" />
 
@@ -96,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textColor="@color/textColor"
                 android:text="2019-04-30 12:30"
                 android:textSize="14dp" />
         </LinearLayout>
@@ -117,6 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:textColor="@color/textColor"
                     android:maxLength="1000"
                     android:maxLines="6"
                     android:padding="3dp"

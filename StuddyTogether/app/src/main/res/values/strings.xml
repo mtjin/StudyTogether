@@ -12,4 +12,6 @@
 
     <!--메뉴이름-->
     <string name="profileMenu">프로필 설정</string>
+    <!--개발자 이메일( 내이메일)-->
+    <string name="develpoer_email">seungeon.jin2@gmail.com</string>
 </resources>
