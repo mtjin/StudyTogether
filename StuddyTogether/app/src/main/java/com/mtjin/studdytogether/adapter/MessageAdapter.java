@@ -107,7 +107,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             @Override
             public void onClick(View v) {
                 //지역과 게시물에 맞게 디비참조
-                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity()).child(model.getId());
+                mMessageDatabaseReference = mRootDatabaseReference.child("study").child(model.getCity()).child(model.getId());
                 FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
                 String currentUserUid = mFirebaseAuth.getUid();
                 if (currentUserUid.equals(model.getUid())) { //작성자가 맞으면 삭제가능
@@ -122,7 +122,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.commentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
+                mMessageDatabaseReference = mRootDatabaseReference.child("study").child(model.getCity());
                 mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -154,7 +154,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMessageDatabaseReference = mRootDatabaseReference.child(model.getCity());
+                mMessageDatabaseReference = mRootDatabaseReference.child("study").child(model.getCity());
                 mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -189,7 +189,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         });
 
         //게시글 댓글 개수 세팅
-        mRootDatabaseReference.child(model.getCity()).child(model.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRootDatabaseReference.child("study").child(model.getCity()).child(model.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(model.getId()+"Comment")){ //댓글이 있는 게시물이라면

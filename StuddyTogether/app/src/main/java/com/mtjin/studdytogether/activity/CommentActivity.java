@@ -89,7 +89,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
         setDrawer(); //드로어 세팅
         processIntent(); //인텐트 처리
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); //키보드올라올떄 UI 위로 떙겨줌
-        mCityDatabaseReference = mRootDatabaseReference.child(mCity).child(mId).child(mId + "Comment"); //해당지역의 게시글의 데이터베이스 참조
+        mCityDatabaseReference = mRootDatabaseReference.child("study").child(mCity).child(mId).child(mId + "Comment"); //해당지역의 게시글의 데이터베이스 참조
 
 
         mCommentsRecyclerView = findViewById(R.id.comments_rev_comments);
@@ -150,7 +150,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
         if (message.equals("")) { //빈칸인경우
             Toast.makeText(getApplicationContext(), "한글자 이상 작성해야합니다.", Toast.LENGTH_SHORT).show();
         } else {
-            mMessageDatabaseReference = mRootDatabaseReference.child(mCity);
+            mMessageDatabaseReference = mRootDatabaseReference.child("study").child(mCity);
             mMessageDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() { //삭제된 게시물인지 확인
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

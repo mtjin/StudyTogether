@@ -58,7 +58,7 @@ public class GangwonActivity extends AppCompatActivity implements SwipeRefreshLa
     private MessageAdapter mMessageAdapter; //게시글어댑터
 
     DatabaseReference mRootDatabaseReference = FirebaseDatabase.getInstance().getReference(); //데이터베이스 위치한곳
-    DatabaseReference mCityDatabaseReference = mRootDatabaseReference.child(mCityStudy); //profile이란 이름의 하위 데이터베이스
+    DatabaseReference mCityDatabaseReference = mRootDatabaseReference.child("study").child(mCityStudy); //profile이란 이름의 하위 데이터베이스
 
     private EditText mSearchEditText; //검색텍스트
     private RecyclerView mMessageRecyclerView;
@@ -218,7 +218,7 @@ public class GangwonActivity extends AppCompatActivity implements SwipeRefreshLa
                     studyMessage.setId(id);
                     studyMessage.setCity(mCityStudy);
                     //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색) (대소문자 상관없이 찾음)
-                    if (studyMessage.getTitle().toLowerCase().contains(searchText) || studyMessage.getContent().toLowerCase().contains(searchText)) {
+                    if (studyMessage.getTitle().toLowerCase().contains(searchText.toLowerCase()) || studyMessage.getContent().toLowerCase().contains(searchText.toLowerCase())) {
                         mMessageList.add(studyMessage);
                     }
                 }
