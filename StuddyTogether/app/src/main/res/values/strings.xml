@@ -14,4 +14,8 @@
     <string name="profileMenu">프로필 설정</string>
     <!--개발자 이메일( 내이메일)-->
     <string name="develpoer_email">seungeon.jin2@gmail.com</string>
+    <string name="title_activity_my_message">MyMessageActivity</string>
+    <!--버튼 텍스트-->
+    <string name="confirm">확인</string>
+    <string name="back">돌아가기</string>
 </resources>

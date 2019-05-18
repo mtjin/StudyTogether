@@ -43,7 +43,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mtjin.studdytogether.MainActivity;
 import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.function.DataValidation;
 import com.mtjin.studdytogether.rtdb_model.Profile;

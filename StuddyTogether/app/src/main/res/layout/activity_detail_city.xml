@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="3dp"
     android:orientation="vertical"
-    tools:context=".city_activity.DetailCityActivity">
+    tools:context=".activity_cities.DetailCityActivity">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.city_activity;
+package com.mtjin.studdytogether.activity_cities;
 
 import android.content.DialogInterface;
 import android.content.Intent;

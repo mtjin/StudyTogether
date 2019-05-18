@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    tools:context=".fragment.IndividualTabFragment">
+
+
+    <EditText
+        android:id="@+id/indiv_pt_receiver"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="받는이의 닉네임을 적어주세요" />
+
+    <Button
+        android:id="@+id/indiv_btn_checkNick"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#7A6CCF"
+        android:text="닉네임 유무 확인" />
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/indiv_btn_myreceive"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#7A6CCF"
+        android:text="내게 온 메세지 확인" />
+
+
+    <EditText
+        android:id="@+id/indiv_pt_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_gray_text"
+        android:hint="닉네임 유무 확인 후 보낼 메세지를 입력하세요(7줄 300자 이내)"
+        android:textColor="@color/textColor"
+        android:lines="7"
+        android:maxLength="300"
+        android:maxLines="7"
+        android:padding="5dp" />
+
+    <Button
+        android:id="@+id/indiv_btn_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="전송"
+        android:background="#7A6CCF"
+        android:layout_marginTop="10dp"
+        android:textSize="80dp" />
+
+</LinearLayout>

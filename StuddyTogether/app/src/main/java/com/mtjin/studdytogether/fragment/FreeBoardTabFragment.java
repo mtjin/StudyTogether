@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.adapter.CommentAdapter;
 import com.mtjin.studdytogether.rtdb_model.Comment;
 

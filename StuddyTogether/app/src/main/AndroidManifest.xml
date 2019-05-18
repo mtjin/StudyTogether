@@ -18,17 +18,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity_cities.GyeonggiActivity"></activity>
+        <activity android:name=".activity.MyMessageActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.PhotoZoomActivity" />
-        <activity android:name=".city_activity.DetailCityActivity" />
+        <activity android:name=".activity_cities.DetailCityActivity" />
         <activity
             android:name=".activity.CommentActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".activity.WriteActivity" />
-        <activity android:name=".city_activity.SeoulActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activity_cities.SeoulActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity

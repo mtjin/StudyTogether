@@ -6,4 +6,5 @@
     <color name="yellowSplash">#FBE000</color>
     <color name="white">#FFFFFF</color>
     <color name="textColor">#000000</color>
+    <color name="cityButtonColor">#FF8868</color>
 </resources>

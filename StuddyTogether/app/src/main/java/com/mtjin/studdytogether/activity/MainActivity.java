@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether;
+package com.mtjin.studdytogether.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,18 +21,25 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.mtjin.studdytogether.R;
 import com.mtjin.studdytogether.activity.LoginActivity;
+import com.mtjin.studdytogether.activity.MyMessageActivity;
 import com.mtjin.studdytogether.activity.PhotoZoomActivity;
 import com.mtjin.studdytogether.activity.ProfileActivity;
-import com.mtjin.studdytogether.city_activity.SeoulActivity;
+import com.mtjin.studdytogether.activity_cities.SeoulActivity;
+import com.mtjin.studdytogether.fragment.CityTabFragment;
+import com.mtjin.studdytogether.fragment.FreeBoardTabFragment;
+import com.mtjin.studdytogether.fragment.IndividualTabFragment;
 import com.mtjin.studdytogether.function.BackPressedFunction;
+import com.mtjin.studdytogether.interfaces.CallCityInterface;
+import com.mtjin.studdytogether.interfaces.MyMessageInterface;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements CityTabFragment.OnFragmentInteractionListener,
-        StudyRoomTabFragment.OnFragmentInteractionListener,
+        IndividualTabFragment.OnFragmentInteractionListener,
         FreeBoardTabFragment.OnFragmentInteractionListener,
-        CallCityInterface {
+        CallCityInterface, MyMessageInterface {
 
     //드로어,메뉴
     private DrawerLayout mDrawerLayout;
@@ -242,4 +249,10 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
 
         }
     };
+
+    @Override
+    public void showMyMessage() {
+        Intent intent = new Intent(getApplicationContext(), MyMessageActivity.class);
+        startActivity(intent);
+    }
 }
