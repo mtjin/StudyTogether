@@ -1,5 +1,6 @@
 package com.mtjin.studdytogether.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -43,7 +44,7 @@ import com.mtjin.studdytogether.R;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener { //GoogleApiClient.OnConnectionFailedListener, View.OnClickListener 구현
 
-    final static String TAG = "LOGIN";
+    final static String TAG = "LoginActivityTAG";
 
     private EditText mIdEditText;
     private EditText mPasswordEditText;
@@ -66,6 +67,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //페이스북로그인
     private CallbackManager callbackManager;
     LoginButton facebookLoginButton;
+    //로딩다이얼로그
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +146,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (mEmail.equals("") || mPassword.equals("")) {
                     Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                 } else {
+                    loading(); //로딩다이얼로그
                     mAuth.signInWithEmailAndPassword(mEmail, mPassword)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -152,6 +156,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         save(); //로그인 정보저장
                                         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                                         startActivity(intent);
+                                        loadingEnd();
                                         finish();
                                     } else {
                                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
@@ -307,6 +312,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     }
                 });
+    }
+
+    public void loading() {
+        //로딩
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog = new ProgressDialog(LoginActivity.this);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setMessage("로그인 중입니다~^^");
+                        progressDialog.show();
+                    }
+                }, 0);
+    }
+
+    public void loadingEnd() {
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 0);
     }
 
 

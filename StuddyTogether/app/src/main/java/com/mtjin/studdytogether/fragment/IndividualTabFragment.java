@@ -47,6 +47,7 @@ public class IndividualTabFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    static final String TAG = "IndividualTabFragTAG";
 
     private MyMessageInterface mMyMessageInterface;
     ViewGroup rootView;
@@ -126,7 +127,7 @@ public class IndividualTabFragment extends Fragment {
                             if (dataSnapshot.hasChild(mReceiverEdit)) {
                                 canSend = true;
                                 mReceiverEmail = (String) dataSnapshot.child(mReceiverEdit).getValue();
-                                Log.d("QQQQQ", "수신인 이메일: " + mReceiverEmail);
+                                Log.d(TAG, "수신인 이메일: " + mReceiverEmail);
                                 Toast.makeText(getActivity(), "해당 닉네임으로 메세지를 보낼 수 있습니다.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getActivity(), "해당 닉네임은 없습니다", Toast.LENGTH_SHORT).show();

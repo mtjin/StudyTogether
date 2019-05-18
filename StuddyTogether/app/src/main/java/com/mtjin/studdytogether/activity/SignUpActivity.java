@@ -19,7 +19,7 @@ import com.mtjin.studdytogether.R;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    final static String TAG = "SIGNIN";
+    final static String TAG = "SignUpActivityTAG";
 
     private EditText mIdEditText;
     private EditText mPasswordEditText;

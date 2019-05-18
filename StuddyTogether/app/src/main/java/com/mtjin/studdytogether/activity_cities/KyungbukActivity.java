@@ -42,9 +42,8 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
-    static final String TAG = "SeoulActivityTAG";
+public class KyungbukActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
+    static final String TAG = "KyungbukActivityTAG";
     static final int WRITE = 100;
     //자신 프로필
     private String mNickName;
@@ -53,7 +52,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     private String mAge; //나이대
     private String mImage; //프로필사진
     //도시
-    private String mCityStudy = "seoulStudy";
+    private String mCityStudy = "kyungbukStudy";
     //리사이클러뷰 구성
     private StudyMessage mStudyMessage; //게시글 아이템
     private MessageAdapter mMessageAdapter; //게시글어댑터
@@ -79,20 +78,20 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seoul);
-        setTitle("서울지역");
+        setContentView(R.layout.activity_kyungbuk);
+        setTitle("경북지역");
 
         loadShared(); //프로필정보받아옴
         setDrawer(); //드로어 세팅
 
-        mSearchEditText = findViewById(R.id.seoul_et_search); //검색
-        mMessageRecyclerView = findViewById(R.id.seoul_rev_message); //채팅메세지들 리사이클러뷰
+        mSearchEditText = findViewById(R.id.kyungbuk_et_search); //검색
+        mMessageRecyclerView = findViewById(R.id.kyungbuk_rev_message); //채팅메세지들 리사이클러뷰
 
 
-        findViewById(R.id.seoul_tv_write).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.kyungbuk_tv_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SeoulActivity.this, WriteActivity.class);
+                Intent intent = new Intent(KyungbukActivity.this, WriteActivity.class);
                 startActivityForResult(intent, WRITE);
             }
         });
@@ -114,12 +113,12 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
 
 
         //리사이클러뷰 끝까지 끌어당기면 새로고침하게 해주는 뷰 onRefresh()에 해당코드 구현
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.seoul_swipe_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.kyungbuk_swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
         mMessageList = new ArrayList<>();
-        mMessageAdapter = new MessageAdapter(mMessageList, getApplicationContext(), SeoulActivity.this);
+        mMessageAdapter = new MessageAdapter(mMessageList, getApplicationContext(), KyungbukActivity.this);
 
         //아래구분선 세팅
         mMessageRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -340,7 +339,7 @@ public class SeoulActivity extends AppCompatActivity implements SwipeRefreshLayo
 
     public void setDrawer(){
         //드로어,메뉴
-        mDrawerLayout = findViewById(R.id.seoul_drawer_layout);
+        mDrawerLayout = findViewById(R.id.kyungbuk_drawer_layout);
         drawerView = findViewById(R.id.drawer);
         mProfileMenuButton = findViewById(R.id.drawer_btn_profileSetting);
         mQuestionMenuButton = findViewById(R.id.drawer_btn_question);

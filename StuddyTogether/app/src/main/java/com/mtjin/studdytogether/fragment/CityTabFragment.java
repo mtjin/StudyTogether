@@ -126,7 +126,7 @@ public class CityTabFragment extends Fragment {
         gyeonggiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallCityInterface.callCity("gyenggi");
+                mCallCityInterface.callCity("gyeonggi");
             }
         });
         incheonButton.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,7 @@ public class CityTabFragment extends Fragment {
         busanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallCityInterface.callCity("busani");
+                mCallCityInterface.callCity("busan");
             }
         });
         ulsanButton.setOnClickListener(new View.OnClickListener() {

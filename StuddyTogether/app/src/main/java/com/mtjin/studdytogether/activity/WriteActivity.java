@@ -43,6 +43,7 @@ import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WriteActivity extends AppCompatActivity {
+    static final String TAG = "WriteActivityTAG";
     Button saveButton;
     Button cancelButton;
     EditText titleEditText;
@@ -86,7 +87,7 @@ public class WriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
-        setTitle("서울지역");
+        setTitle("글 작성");
         loadShared(); //프로필정보받아옴
         setDrawer(); //드로어 세팅
 

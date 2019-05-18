@@ -26,7 +26,24 @@ import com.mtjin.studdytogether.activity.LoginActivity;
 import com.mtjin.studdytogether.activity.MyMessageActivity;
 import com.mtjin.studdytogether.activity.PhotoZoomActivity;
 import com.mtjin.studdytogether.activity.ProfileActivity;
+import com.mtjin.studdytogether.activity_cities.AllcityActivity;
+import com.mtjin.studdytogether.activity_cities.BusanActivity;
+import com.mtjin.studdytogether.activity_cities.ChungbukActivity;
+import com.mtjin.studdytogether.activity_cities.ChungnamActivity;
+import com.mtjin.studdytogether.activity_cities.DaegeonActivity;
+import com.mtjin.studdytogether.activity_cities.DaeguActivity;
+import com.mtjin.studdytogether.activity_cities.GangwonActivity;
+import com.mtjin.studdytogether.activity_cities.GwangjuActivity;
+import com.mtjin.studdytogether.activity_cities.GyeonggiActivity;
+import com.mtjin.studdytogether.activity_cities.IncheonActivity;
+import com.mtjin.studdytogether.activity_cities.JejuActivity;
+import com.mtjin.studdytogether.activity_cities.JeonbukActivity;
+import com.mtjin.studdytogether.activity_cities.JeonnamActivity;
+import com.mtjin.studdytogether.activity_cities.KyungbukActivity;
+import com.mtjin.studdytogether.activity_cities.KyungnamActivity;
+import com.mtjin.studdytogether.activity_cities.SejongActivity;
 import com.mtjin.studdytogether.activity_cities.SeoulActivity;
+import com.mtjin.studdytogether.activity_cities.UlsanActivity;
 import com.mtjin.studdytogether.fragment.CityTabFragment;
 import com.mtjin.studdytogether.fragment.FreeBoardTabFragment;
 import com.mtjin.studdytogether.fragment.IndividualTabFragment;
@@ -40,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
         IndividualTabFragment.OnFragmentInteractionListener,
         FreeBoardTabFragment.OnFragmentInteractionListener,
         CallCityInterface, MyMessageInterface {
-
+    static final String TAG = "MainActivityTAG";
     //드로어,메뉴
     private DrawerLayout mDrawerLayout;
     private View drawerView;
@@ -112,10 +129,80 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
 
     @Override
     public void callCity(String city) {
+        Intent intent;
         switch (city) {
             case "seoul":
-                Intent intent = new Intent(this, SeoulActivity.class);
+                intent = new Intent(this, SeoulActivity.class);
                 startActivity(intent);
+                break;
+            case "gyeonggi":
+               intent = new Intent(this, GyeonggiActivity.class);
+                startActivity(intent);
+                break;
+            case "incheon":
+                intent = new Intent(this, IncheonActivity.class);
+                startActivity(intent);
+                break;
+            case "gangwon":
+                intent = new Intent(this, GangwonActivity.class);
+                startActivity(intent);
+                break;
+            case "chungnam":
+                intent = new Intent(this, ChungnamActivity.class);
+                startActivity(intent);
+                break;
+            case "daegeon":
+                intent = new Intent(this, DaegeonActivity.class);
+                startActivity(intent);
+                break;
+            case "chungbuk":
+                intent = new Intent(this, ChungbukActivity.class);
+                startActivity(intent);
+                break;
+            case "sejong":
+                intent = new Intent(this, SejongActivity.class);
+                startActivity(intent);
+                break;
+            case "busan":
+                intent = new Intent(this, BusanActivity.class);
+                startActivity(intent);
+                break;
+            case "ulsan":
+                intent = new Intent(this, UlsanActivity.class);
+                startActivity(intent);
+                break;
+            case "daegu":
+                intent = new Intent(this, DaeguActivity.class);
+                startActivity(intent);
+                break;
+            case "kyungbuk":
+                intent = new Intent(this, KyungbukActivity.class);
+                startActivity(intent);
+                break;
+            case "kyungnam":
+                intent = new Intent(this, KyungnamActivity.class);
+                startActivity(intent);
+                break;
+            case "jeonnam":
+                intent = new Intent(this, JeonnamActivity.class);
+                startActivity(intent);
+                break;
+            case "gwangju":
+                intent = new Intent(this, GwangjuActivity.class);
+                startActivity(intent);
+                break;
+            case "jeonbuk":
+                intent = new Intent(this, JeonbukActivity.class);
+                startActivity(intent);
+                break;
+            case "jeju":
+                intent = new Intent(this, JejuActivity.class);
+                startActivity(intent);
+                break;
+            case "allcity":
+                intent = new Intent(this, AllcityActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -146,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
         mImage = pref.getString("image", "");
     }
 
-    public void setDrawer(){
+    public void setDrawer() {
         //드로어,메뉴
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
         drawerView = findViewById(R.id.drawer);
@@ -169,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
                 //이 플래그는 API 11 (허니콤)부터 사용이가능한데 그 이하버전은 0.2%수준이다.
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                }else{
+                } else {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
                 startActivity(intent);
@@ -228,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
             }
         });
     }
+
     DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(@NonNull View view, float v) {

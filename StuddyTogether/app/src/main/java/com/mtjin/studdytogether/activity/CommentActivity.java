@@ -40,7 +40,7 @@ import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
-
+    static final String TAG = "CommentActivityTAG";
     private RecyclerView mCommentsRecyclerView;
     private EditText mWriteEditText;
     private Button mSendButton;
@@ -84,6 +84,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+        setTitle("댓글");
         loadShared(); //쉐어드 데이터가져오기
         setDrawer(); //드로어 세팅
         processIntent(); //인텐트 처리
@@ -199,8 +200,8 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     public void processIntent() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        Log.d("TEST22", bundle.getString("id", ""));
-        Log.d("TEST22", bundle.getString("city", ""));
+        Log.d(TAG, "id: "+bundle.getString("id", ""));
+        Log.d(TAG, "city: "+bundle.getString("city", ""));
         if (bundle.getString("id") != null) {
             mId = bundle.getString("id");
         }

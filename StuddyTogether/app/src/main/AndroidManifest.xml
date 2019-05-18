@@ -18,13 +18,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity_cities.GyeonggiActivity"></activity>
+        <activity android:name=".activity_cities.AllcityActivity"></activity>
+        <activity android:name=".activity_cities.JejuActivity" />
+        <activity android:name=".activity_cities.JeonbukActivity" />
+        <activity android:name=".activity_cities.GwangjuActivity" />
+        <activity android:name=".activity_cities.JeonnamActivity" />
+        <activity android:name=".activity_cities.KyungnamActivity" />
+        <activity android:name=".activity_cities.KyungbukActivity" />
+        <activity android:name=".activity_cities.DaeguActivity" />
+        <activity android:name=".activity_cities.UlsanActivity" />
+        <activity android:name=".activity_cities.BusanActivity" />
+        <activity android:name=".activity_cities.SejongActivity" />
+        <activity android:name=".activity_cities.ChungbukActivity" />
+        <activity android:name=".activity_cities.DaegeonActivity" />
+        <activity android:name=".activity_cities.ChungnamActivity" />
+        <activity android:name=".activity_cities.GangwonActivity" />
+        <activity android:name=".activity_cities.IncheonActivity" />
+        <activity android:name=".activity_cities.GyeonggiActivity" />
         <activity android:name=".activity.MyMessageActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.PhotoZoomActivity" />
-        <activity android:name=".activity_cities.DetailCityActivity" />
+        <activity android:name=".activity.DetailCityActivity" />
         <activity
             android:name=".activity.CommentActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />

@@ -26,7 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.activity_cities.DetailCityActivity;
+import com.mtjin.studdytogether.activity.DetailCityActivity;
 import com.mtjin.studdytogether.activity.CommentActivity;
 import com.mtjin.studdytogether.rtdb_model.StudyMessage;
 
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
+    static final String TAG = "MessageAdapterTAG";
     Context context;
     AppCompatActivity appCompatActivity;
     ArrayList<StudyMessage> items = new ArrayList<StudyMessage>();
@@ -132,8 +133,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             Bundle bundle = new Bundle();
                             bundle.putString("id", model.getId());
                             bundle.putString("city", model.getCity());
-                            Log.d("TEST11", model.getId());
-                            Log.d("TEST11", model.getCity());
+                            Log.d(TAG,"ID : "+ model.getId());
+                            Log.d(TAG, "City: "+model.getCity());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
@@ -192,8 +193,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(model.getId()+"Comment")){ //댓글이 있는 게시물이라면
-                    Log.d("TTTT", dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"" );
-                    Log.d("TTTT", holder.commentTextView.getText().toString());
+                    Log.d(TAG, "게시글댓글 수: "+dataSnapshot.child(model.getId()+"Comment").getChildrenCount());
+                    Log.d(TAG, "댓글TEXT : "+holder.commentTextView.getText().toString());
                     holder.commentTextView.setText("댓글: " + dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"개");
                     model.setCommentNum("댓글: " + dataSnapshot.child(model.getId()+"Comment").getChildrenCount()+"개");
                 }else {

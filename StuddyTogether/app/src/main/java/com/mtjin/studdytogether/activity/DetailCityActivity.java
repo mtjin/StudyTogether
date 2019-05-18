@@ -1,4 +1,4 @@
-package com.mtjin.studdytogether.activity_cities;
+package com.mtjin.studdytogether.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,14 +25,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mtjin.studdytogether.R;
-import com.mtjin.studdytogether.activity.CommentActivity;
-import com.mtjin.studdytogether.activity.LoginActivity;
-import com.mtjin.studdytogether.activity.PhotoZoomActivity;
-import com.mtjin.studdytogether.activity.ProfileActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailCityActivity extends AppCompatActivity {
+    static final String TAG = "DetailCityActivityTAG";
     private TextView mTitleTextView;//제목
     private TextView mNickNameTextView; //닉네임
     private TextView mAgeTextView; //나이
@@ -124,8 +121,8 @@ public class DetailCityActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("id",mId);
                 bundle.putString("city", mCity);
-                Log.d("TEST11", mId);
-                Log.d("TEST11", mCity);
+                Log.d(TAG, "mId: "+mId);
+                Log.d(TAG, "City: " +mCity);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtras(bundle);
                 startActivity(intent);

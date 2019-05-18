@@ -23,7 +23,7 @@ import com.mtjin.studdytogether.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PhotoZoomActivity extends AppCompatActivity {
-
+    static final String TAG = "PhotoZoomActivityTAG";
     private PhotoView mPhotoView;
     private String mPhoto;
     //자신 프로필
@@ -42,6 +42,7 @@ public class PhotoZoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_zoom);
+        setTitle("사진");
         loadShared();
         setDrawer();
 

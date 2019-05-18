@@ -157,8 +157,8 @@ public class ProfileActivity extends AppCompatActivity {
                 in.close();
                 // 이미지 표시
                 mPhotoCircleImageView.setImageBitmap(img);
-                Log.d(TAG, data.getData() + "");
-                Log.d(TAG, img + "");
+                Log.d(TAG, "갤러리 inputStream: "+ data.getData() );
+                Log.d(TAG, "갤러리 사진decodeStream: "+img );
 
                 mTmpDownloadImageUri = null;
             } catch (Exception e) {
@@ -206,7 +206,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (tmpNickName.length() > 7 || tmpNickName.length() <= 0 || (!DataValidation.checkOnlyCharacters(tmpNickName))) {
                     Toast.makeText(ProfileActivity.this, "닉네임은 1~7글자 이하이고 특수문자를 쓰면 안됩니다.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("DDDD", "IN mCheckidButton");
+                    Log.d(TAG, "IN mCheckidButton온클릭 안");
                     //초기화
                     isNickExisted1 = false;
                     isHasRemovedNickName = false;
@@ -266,9 +266,9 @@ public class ProfileActivity extends AppCompatActivity {
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("profilelogin", isCheckid + "");
-                Log.d("profilelogin1", isNickExisted1 + "");
-                Log.d("profilelogin3", mUid);
+                Log.d(TAG, "아이디 중복체크여부 : "+isCheckid );
+                Log.d(TAG, "해당 닉네임 존재여부: "+isNickExisted1 );
+                Log.d(TAG, "토큰 : "+mUid);
                 //mSex는 스피너리스너에서 저장해놈놈
                 mNickName = mNickNameEditText.getText().toString().trim();
 
@@ -299,7 +299,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     if (task.isSuccessful()) {
                                         mDownloadImageUri = task.getResult();
-                                        Log.d(TAG + "DOWN", mDownloadImageUri + "");
+                                        Log.d(TAG , "파이어스토리지 사진다운 url: "+mDownloadImageUri);
                                         //디비에넣기전 이전 아이디는 디비에서삭제
                                         if (isHasRemovedNickName) {
                                             mNickNameDatabaseReference.child(removeNickName).setValue(null); //child는 하위값이 없으면 자동으로 삭제되는점 이용
