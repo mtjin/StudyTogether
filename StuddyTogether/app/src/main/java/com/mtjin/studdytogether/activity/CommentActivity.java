@@ -56,7 +56,7 @@ public class CommentActivity extends AppCompatActivity implements SwipeRefreshLa
     private String mUid;
     private String mImage; //프로필사진
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     //어댑터 , 아이템리스트
     private CommentAdapter mCommentAdapter;
     private ArrayList<Comment> mCommentList;

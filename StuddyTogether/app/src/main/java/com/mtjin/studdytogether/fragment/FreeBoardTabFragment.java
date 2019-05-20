@@ -67,7 +67,7 @@ public class FreeBoardTabFragment extends Fragment implements SwipeRefreshLayout
     private String mImage;
     private String mAge;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     //어댑터 , 아이템리스트
     private CommentAdapter mCommentAdapter;
     private ArrayList<Comment> mCommentList;

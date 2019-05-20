@@ -52,4 +52,13 @@
         android:layout_marginTop="10dp"
         android:textSize="80dp" />
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/textColor"
+        android:textSize="20dp"
+        android:hint="팁.\n같이 스터디 하고 싶은사람에게 사적으로 메세지를 보낼 수 있습니다."/>
+
 </LinearLayout>

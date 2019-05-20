@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements CityTabFragment.O
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.addTab(tabLayout.newTab().setText("스터디모집"));
-        tabLayout.addTab(tabLayout.newTab().setText("스터디룸"));
+        tabLayout.addTab(tabLayout.newTab().setText("메세지"));
         tabLayout.addTab(tabLayout.newTab().setText("자유게시판"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

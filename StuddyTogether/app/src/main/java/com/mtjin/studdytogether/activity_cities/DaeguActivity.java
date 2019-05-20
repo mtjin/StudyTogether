@@ -218,7 +218,7 @@ public class DaeguActivity extends AppCompatActivity implements SwipeRefreshLayo
                     studyMessage.setId(id);
                     studyMessage.setCity(mCityStudy);
                     //해당 텍스트의 메세지가 있으면 어댑터에 추가해줌(제목하고 내용검색) (대소문자 상관없이 찾음)
-                    if (studyMessage.getTitle().toLowerCase().contains(searchText.toLowerCase()) || studyMessage.getContent().toLowerCase().contains(searchText.toLowerCase())) {
+                    if (studyMessage.getTitle().toLowerCase().contains(searchText.toLowerCase()) || studyMessage.getContent().toLowerCase().contains(searchText.toLowerCase())|| studyMessage.getNickName().toLowerCase().contains(searchText.toLowerCase())) {
                         mMessageList.add(studyMessage);
                     }
                 }

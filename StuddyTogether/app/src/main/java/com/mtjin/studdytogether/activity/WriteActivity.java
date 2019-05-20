@@ -70,7 +70,7 @@ public class WriteActivity extends AppCompatActivity {
     private String mProfileImage; //프로필사진
     private String mNickName;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     //드로어,메뉴
     private DrawerLayout mDrawerLayout;

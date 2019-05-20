@@ -67,7 +67,7 @@ public class IndividualTabFragment extends Fragment {
    String mAge;
    String mImage;
     //날짜포맷
-    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd mm:ss");
+    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     //유저토큰
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser mFirebaseUser;
