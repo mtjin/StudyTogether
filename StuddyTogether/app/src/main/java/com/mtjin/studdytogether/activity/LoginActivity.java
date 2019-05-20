@@ -145,6 +145,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 mPassword = mPasswordEditText.getText().toString().trim();
                 if (mEmail.equals("") || mPassword.equals("")) {
                     Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                    loadingEnd();
                 } else {
                     loading(); //로딩다이얼로그
                     mAuth.signInWithEmailAndPassword(mEmail, mPassword)
