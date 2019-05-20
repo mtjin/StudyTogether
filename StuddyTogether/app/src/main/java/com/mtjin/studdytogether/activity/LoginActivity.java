@@ -162,6 +162,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     } else {
                                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                                         Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
+                                        loadingEnd();
                                         mIdEditText.startAnimation(shake);
                                         mPasswordEditText.startAnimation(shake);
                                     }
